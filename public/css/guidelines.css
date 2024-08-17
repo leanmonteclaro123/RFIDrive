@@ -1,0 +1,42 @@
+body {
+    font-family: var(--body-font);
+    font-size: var(--normal-font-size);
+    background-color: var(--white-color);
+    background-image: url("/Images/loginbg.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed; /* Keeps the background fixed */
+    position: sticky;
+  }
+  
+  .fixed-bg {
+    background-color: transparent; /* Ensure background color is transparent for the fixed background section */
+  }
+  
+  .white-bg {
+    background-color: var(--white-color); /* Ensure background color is white for sections following the fixed background */
+    height: auto;
+  }
+
+.guidelines-content-container {
+    text-align: center;
+    margin: 2rem auto;
+    max-width: 800px;
+    padding: 2rem;
+}
+
+.guidelines-header {
+    text-align: left;
+    color: hsl(0, 55%, 50%);
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #000;
+    padding-bottom: 1rem;
+}
+
+.guidelines-content p {
+    text-align: justify;
+    margin-bottom: 1rem;
+    color: hsl(220, 24%, 15%);
+}
