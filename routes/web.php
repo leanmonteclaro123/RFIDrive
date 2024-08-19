@@ -20,7 +20,6 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 // Logout route
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-
 // PSGC Routes (publicly accessible)
 Route::get('/provinces', [PSGCController::class, 'getProvinces']);
 Route::get('/municipalities/{provinceCode}', [PSGCController::class, 'getMunicipalities']);
@@ -41,7 +40,10 @@ Route::get('/guidelines', function() {
 Route::middleware(['auth'])->group(function () {
 
     // Vehicle Registration page, accessible only when logged in
-    Route::get('/VehicleRegistration', function() {
-        return view('vehicleRegistration');
-    })->name('vehicleRegistration');
+    Route::get('/vehicle-registration', [LoginController::class, 'showVehicleRegistrationForm'])->name('vehicle.registration');
 });
+
+// Admin route
+Route::get('/admin', function() {
+    return view('admin');
+})->name('admin');

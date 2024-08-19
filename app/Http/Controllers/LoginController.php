@@ -15,6 +15,8 @@ class LoginController extends Controller
     use ValidatesRequests;
     // Register a new user
 
+    
+
     public function showRegistrationForm()
     {
         // Instantiate PSGCController and fetch provinces
@@ -64,9 +66,9 @@ class LoginController extends Controller
             'password' => Hash::make($request->password), // Hash the password before saving
         ]);
 
-        Auth::login($user);
+        // Auth::login($user);
 
-        return redirect()->route('landing')->with('success', 'Account created successfully!');
+        return redirect()->route('login')->with('success', 'Account created successfully!');
     }
 
 
@@ -110,5 +112,20 @@ class LoginController extends Controller
         Auth::logout();
         return redirect()->route('landing')->with('success', 'Logged out successfully!');
     }
+
+    public function showVehicleRegistrationForm()
+    {
+        // Get the authenticated user
+        $user = Auth::user();
+
+        // Pass the user data to the vehicle registration view
+        if ($user) {
+            return view('vehicleRegistration', compact('user'));
+        }
+
+        // If user is not authenticated, redirect to login
+        return redirect()->route('login')->with('error', 'You need to be logged in to register a vehicle.');
+    }
+
 
 }

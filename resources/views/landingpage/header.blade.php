@@ -28,7 +28,7 @@
 
                         <ul class="dropdown__menu">
                             <li>
-                                <a href="{{ route('vehicleRegistration') }}" class="dropdown__link ">
+                                <a href="{{ route('vehicle.registration') }}" class="dropdown__link ">
                                     <i class="ri-pie-chart-line"></i>Registration
                                 </a>
                             </li>
