@@ -7,16 +7,16 @@
     <div class="container home-section" id="registration">
         <div class="card register-container shadow-lg p-4 mb-5 bg-white rounded">
 
-             <!-- Error Display Section -->
-             @if ($errors->any())
-             <div class="alert alert-danger">
-                 <ul>
-                     @foreach ($errors->all() as $error)
-                         <li>{{ $error }}</li>
-                     @endforeach
-                 </ul>
-             </div>
-         @endif
+            <!-- Error Display Section -->
+            @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
 
             <form id="vehicle-registration-form" action="{{ route('vehicle.registration.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
@@ -124,6 +124,7 @@
                             <label for="registered-owner-province-1">Province <span class="text-danger">*</span>:</label>
                             <select name="vehicles[0][registered_owner_province]" id="registered-owner-province-1" class="form-control" required>
                                 <option value="">Select Province</option>
+                                <!-- Add options dynamically -->
                             </select>
                         </div>
 
@@ -131,6 +132,7 @@
                             <label for="registered-owner-municipality-1">Municipality <span class="text-danger">*</span>:</label>
                             <select name="vehicles[0][registered_owner_municipality]" id="registered-owner-municipality-1" class="form-control" required>
                                 <option value="">Select Municipality</option>
+                                <!-- Add options dynamically -->
                             </select>
                         </div>
 
@@ -138,6 +140,7 @@
                             <label for="registered-owner-barangay-1">Barangay <span class="text-danger">*</span>:</label>
                             <select name="vehicles[0][registered_owner_barangay]" id="registered-owner-barangay-1" class="form-control" required>
                                 <option value="">Select Barangay</option>
+                                <!-- Add options dynamically -->
                             </select>
                         </div>
                         
@@ -150,14 +153,14 @@
                             <div class="upload-group" data-label="OR-reg">
                                 <input name="documents[2][file]" type="file" id="or-reg-1" class="form-control-file" accept=".jpg, .jpeg, .png" required>
                                 <img id="or-reg-preview-1" class="img-preview or-preview" style="display:none;" alt="OR Preview">
-                                    <label for="or-reg-1">
+                                <label for="or-reg-1">
                                     <i class="fas fa-upload"></i>
                                     <span>Upload OR</span>
                                 </label>
                             </div>
 
                             <div class="upload-group" data-label="CR-reg">
-                                <input name="documents[1][file]" type="file" id="cr-reg-1" class="form-control-file" accept=".jpg, .jpeg, .png" required>
+                                <input name="documents[3][file]" type="file" id="cr-reg-1" class="form-control-file" accept=".jpg, .jpeg, .png" required>
                                 <img id="cr-reg-preview-1" class="img-preview cr-preview" style="display:none;" alt="CR Preview">
                                 <label for="cr-reg-1">
                                     <i class="fas fa-upload"></i>
@@ -166,12 +169,12 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="documents[0][expiry_date]" class="form-label">Expiry Date <span class="text-danger">*</span>:</label>
-                            <input type="date" name="documents[0][expiry_date]" class="form-control" required>
+                            <label for="documents[2][expiry_date]" class="form-label">Expiry Date <span class="text-danger">*</span>:</label>
+                            <input type="date" name="documents[2][expiry_date]" class="form-control" required>
                         </div>
                     </div>
 
-                    <!-- Placeholder for Vehicle 2, initially hidden -->
+                    <!-- Vehicle 2 Section (Hidden initially) -->
                     <div class="card shadow-sm mb-4 p-3 vehicle-section" id="vehicle-section-2" style="display:none;">
                         <h4>Vehicle Information (Vehicle 2)</h4>
                         <!-- Same fields for the second vehicle as Vehicle 1 -->
@@ -211,6 +214,7 @@
                             <label for="registered-owner-province-2">Province <span class="text-danger">*</span>:</label>
                             <select name="vehicles[1][registered_owner_province]" id="registered-owner-province-2" class="form-control" required>
                                 <option value="">Select Province</option>
+                                <!-- Add options dynamically -->
                             </select>
                         </div>
 
@@ -218,6 +222,7 @@
                             <label for="registered-owner-municipality-2">Municipality <span class="text-danger">*</span>:</label>
                             <select name="vehicles[1][registered_owner_municipality]" id="registered-owner-municipality-2" class="form-control" required>
                                 <option value="">Select Municipality</option>
+                                <!-- Add options dynamically -->
                             </select>
                         </div>
 
@@ -225,6 +230,7 @@
                             <label for="registered-owner-barangay-2">Barangay <span class="text-danger">*</span>:</label>
                             <select name="vehicles[1][registered_owner_barangay]" id="registered-owner-barangay-2" class="form-control" required>
                                 <option value="">Select Barangay</option>
+                                <!-- Add options dynamically -->
                             </select>
                         </div>
                         
@@ -241,7 +247,6 @@
                                     <i class="fas fa-upload"></i>
                                     <span>Upload OR</span>
                                 </label>
-                                
                             </div>
                             
                             <div class="upload-group" data-label="CR-reg">
@@ -260,8 +265,6 @@
                         </div>
                         <button type="button" class="btn btn-danger remove-vehicle-btn" onclick="removeVehicle(2)">Remove Vehicle</button>
                     </div>
-
-
                 </div>
 
                 <div class="reg-footer text-center">
@@ -272,6 +275,7 @@
         </div>
     </div>
 </section>
+
 <!-- Confirmation Modal -->
 <div id="confirmationModal" class="modal">
     <div class="modal-content">
@@ -315,10 +319,6 @@
         </div>
     </div>
 </div>
-
-<script>
-    var userId = "{{ Auth::user()->id }}";
-</script>
 
 <link rel="stylesheet" href="{{ asset('css/vehicleRegistration.css') }}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
