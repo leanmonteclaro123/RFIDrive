@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PSGCController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\VehicleRegistrationController;
 
 // Landing page is accessible by everyone (no authentication required)
 Route::get('/', [LoginController::class, 'landing'])->name('landing');
@@ -38,12 +39,17 @@ Route::get('/guidelines', function() {
 
 // Routes that require authentication
 Route::middleware(['auth'])->group(function () {
-
-    // Vehicle Registration page, accessible only when logged in
-    Route::get('/vehicle-registration', [LoginController::class, 'showVehicleRegistrationForm'])->name('vehicle.registration');
+    // Vehicle Registration routes
+    Route::get('/vehicle-registration', [VehicleRegistrationController::class, 'create'])->name('vehicle.registration');
+    Route::post('/vehicle-registration', [VehicleRegistrationController::class, 'store'])->name('vehicle.registration.store');
+    
+    // Profile route
+    Route::get('/profile', [LoginController::class, 'showProfile'])->name('profile');
 });
+
 
 // Admin route
 Route::get('/admin', function() {
     return view('admin');
 })->name('admin');
+

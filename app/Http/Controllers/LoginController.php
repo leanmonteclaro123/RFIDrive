@@ -13,23 +13,18 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 class LoginController extends Controller
 {
     use ValidatesRequests;
-    // Register a new user
 
-    
-
+    // Show registration form with provinces
     public function showRegistrationForm()
     {
-        // Instantiate PSGCController and fetch provinces
         $psgcController = new PSGCController();
         $provincesResponse = $psgcController->getProvinces();
-        $provinces = $provincesResponse->getData(); // Fetch provinces as an array
+        $provinces = $provincesResponse->getData();
 
-        // Check the provinces data for debugging purposes (optional)
-        // dd($provinces);
-
-        // Return the view with the provinces data
         return view('login', ['provinces' => $provinces]);
     }
+
+    // Register a new user
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -63,26 +58,21 @@ class LoginController extends Controller
             'campus' => $request->campus ?? 'Batangas State University ARASOF Nasugbu',
             'username' => $request->username,
             'email' => $request->email,
-            'password' => Hash::make($request->password), // Hash the password before saving
+            'password' => Hash::make($request->password),
         ]);
-
-        // Auth::login($user);
 
         return redirect()->route('login')->with('success', 'Account created successfully!');
     }
 
-
     // Display user details on landing page
     public function landing()
     {
-        // Ensure the user is authenticated and retrieve their data
         return view('landing', ['user' => Auth::user()]);
     }
 
     // Login user
     public function login(Request $request)
     {
-        // Validate the login request
         $validator = Validator::make($request->all(), [
             'email' => 'required|string|email',
             'password' => 'required|string|min:8',
@@ -92,19 +82,14 @@ class LoginController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        // Get the email and password from the request
         $credentials = $request->only('email', 'password');
 
-        // Attempt to log in the user with the provided credentials
         if (Auth::attempt($credentials)) {
-            // If successful, redirect to the landing page
             return redirect()->route('landing')->with('success', 'Logged in successfully!');
         }
 
-        // If authentication fails, redirect back with an error
         return redirect()->back()->withErrors(['password' => 'The provided password is incorrect.'])->withInput();
     }
-
 
     // Logout user
     public function logout()
@@ -113,19 +98,15 @@ class LoginController extends Controller
         return redirect()->route('landing')->with('success', 'Logged out successfully!');
     }
 
-    public function showVehicleRegistrationForm()
+    // Show user profile
+    public function showProfile()
     {
-        // Get the authenticated user
         $user = Auth::user();
 
-        // Pass the user data to the vehicle registration view
         if ($user) {
-            return view('vehicleRegistration', compact('user'));
+            return view('landingProfile', compact('user'));
         }
 
-        // If user is not authenticated, redirect to login
         return redirect()->route('login')->with('error', 'You need to be logged in to register a vehicle.');
     }
-
-
 }

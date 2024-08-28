@@ -1,0 +1,125 @@
+/* General Styles */
+body {
+    background-color: #f5f7fa;
+    background-image: url("/Images/loginbg.png");
+    background-size: cover;
+    background-attachment: fixed;
+    
+}
+
+/* Profile Section Styles */
+.profile-settings {
+    background-color: #ffffff;
+    padding: 30px;
+    margin-top: 30px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.profile-settings .avatar img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    
+    margin-bottom: 20px;
+}
+
+.profile-settings .form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.profile-settings .form-group label {
+    flex: 0 0 150px;
+    margin-bottom: 0;
+    text-align: right;
+    font-weight: 500;
+    color: #555;
+    padding-right: 15px;
+}
+
+.profile-settings .form-group .form-control {
+    flex: 1;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    background-color: white;
+    transition: border-color 0.3s;
+}
+
+.profile-settings .form-group .form-control:focus {
+    border-color: #007bff;
+    background-color: #ffffff;
+    box-shadow: none;
+}
+
+.btn-primary, .btn-secondary {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 25px;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .profile-settings {
+        padding: 20px;
+    }
+
+    .profile-settings .form-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .profile-settings .form-group label {
+        text-align: left;
+        padding-right: 0;
+        margin-bottom: 5px;
+    }
+
+    .profile-settings .form-group .form-control {
+        width: 100%;
+    }
+
+    .profile-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .profile-settings .avatar img {
+        width: 80px;
+        height: 80px;
+    }
+}

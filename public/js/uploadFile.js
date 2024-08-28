@@ -1,18 +1,88 @@
 document.addEventListener('DOMContentLoaded', function () {
     let vehicleCount = 1; // Track the number of vehicles (1 by default)
 
+    // Show the terms and conditions modal on page load
+    const termsModal = document.getElementById('termsModal');
+    const acceptTerms = document.getElementById('acceptTerms');
+    const declineTerms = document.getElementById('declineTerms');
+    const closeBtn = document.querySelector('.modal .close');
+    const vehicleForm = document.querySelector('.home-content');
+
+    // Ensure userId is correctly passed from server-side
+    const userId = window.userId;
+
+    // Function to check if a cookie exists
+    function getCookie(name) {
+        let matches = document.cookie.match(new RegExp(
+            "(?:^|; )" + name.replace(/([.$?*|{}()[]\/+^])/g, '\\$1') + "=([^;]*)"
+        ));
+        return matches ? decodeURIComponent(matches[1]) : undefined;
+    }
+
+    // Function to set a cookie
+    function setCookie(name, value, options = {}) {
+        options = { path: '/', ...options };
+        if (options.expires instanceof Date) {
+            options.expires = options.expires.toUTCString();
+        }
+        let updatedCookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)}`;
+        for (let optionKey in options) {
+            updatedCookie += `; ${optionKey}`;
+            let optionValue = options[optionKey];
+            if (optionValue !== true) {
+                updatedCookie += `=${optionValue}`;
+            }
+        }
+        document.cookie = updatedCookie;
+        console.log(`Cookie set: ${updatedCookie}`); // Debugging
+    }
+
+    // Make the cookie user-specific
+    const cookieName = `termsAgreed_${userId}`;
+
+    // Check if the user has already agreed to the terms
+    if (getCookie(cookieName) === 'true') {
+        vehicleForm.style.pointerEvents = 'auto';
+        vehicleForm.style.opacity = '1';
+    } else {
+        vehicleForm.style.pointerEvents = 'none';
+        vehicleForm.style.opacity = '0.5';
+        termsModal.style.display = 'block';
+    }
+
+    closeBtn.addEventListener('click', function () {
+        termsModal.style.display = 'none';
+    });
+
+    window.onclick = function (event) {
+        if (event.target == termsModal) {
+            termsModal.style.display = 'none';
+        }
+    };
+
+    acceptTerms.addEventListener('click', function () {
+        termsModal.style.display = 'none';
+        vehicleForm.style.pointerEvents = 'auto';
+        vehicleForm.style.opacity = '1';
+        setCookie(cookieName, 'true', { expires: new Date(new Date().getTime() + 365 * 24 * 60 * 60 * 1000) });
+    });
+
+    declineTerms.addEventListener('click', function () {
+        termsModal.style.display = 'none';
+        alert("You must agree to the terms and conditions to interact with the form.");
+    });
+
     // Function to change the ID label based on the user's type (role)
     function updateIDLabel() {
         const role = document.getElementById('role').value;
         const idLabel = document.querySelector('label[for="id"]');
-
         if (role === 'Student') {
             idLabel.innerHTML = 'Student ID <span class="text-danger">*</span>:';
         } else if (role === 'Faculty') {
             idLabel.innerHTML = 'Employee ID <span class="text-danger">*</span>:';
-        }else if (role === 'Parent') {
+        } else if (role === 'Parent') {
             idLabel.innerHTML = 'Parent ID <span class="text-danger">*</span>:';
-        }else if (role === 'Tenant') {
+        } else if (role === 'Tenant') {
             idLabel.innerHTML = 'Tenant ID <span class="text-danger">*</span>:';
         } else {
             idLabel.innerHTML = 'ID <span class="text-danger">*</span>:';
@@ -37,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     .then(response => response.json())
                     .then(data => {
                         municipalitySelect.innerHTML = '<option value="">Select Municipality</option>';
-                        barangaySelect.innerHTML = '<option value="">Select Barangay</option>'; // Reset barangays
+                        barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
                         data.forEach(municipality => {
                             const option = document.createElement('option');
                             option.value = municipality.code;
@@ -49,7 +119,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // Load barangays when a municipality is selected and fill in the zip code
         municipalitySelect.addEventListener('change', function () {
             const municipalityCode = this.value;
             if (municipalityCode) {
@@ -66,7 +135,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     })
                     .catch(error => console.error('Error fetching barangays:', error));
 
-                // Fetch zip code based on the selected municipality
                 const selectedMunicipality = municipalitySelect.options[municipalitySelect.selectedIndex].text;
                 fetch(`/zipcode?municipality=${selectedMunicipality}`)
                     .then(response => response.json())
@@ -85,7 +153,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // Load provinces on page load
         fetch('/provinces')
             .then(response => response.json())
             .then(data => {
@@ -100,63 +167,47 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error('Error fetching provinces:', error));
     }
 
-    // Load provinces and other dropdowns for the first vehicle initially
     loadProvinces(1);
 
-    // Add vehicle functionality
     window.addVehicle = function () {
         if (vehicleCount < 2) {
             const vehicleSection2 = document.getElementById('vehicle-section-2');
             if (vehicleSection2) {
                 vehicleSection2.style.display = 'block';
                 console.log('Vehicle 2 section displayed');
-                loadProvinces(2); // Initialize provinces and dropdowns for the second vehicle
+                loadProvinces(2);
             }
             vehicleCount++;
-
-            // Disable "Add Another Vehicle" button
             const addVehicleBtn = document.querySelector('.btn-add-vehicle');
             if (addVehicleBtn) {
                 addVehicleBtn.disabled = true;
                 addVehicleBtn.innerText = 'Maximum of 2 Vehicles Reached';
             }
-
-            // Initialize file preview handling for Vehicle 2
             initFilePreviews(2);
         }
     };
 
-    // Remove vehicle functionality
     window.removeVehicle = function (vehicleNumber) {
         if (vehicleNumber === 2) {
             const vehicleSection2 = document.getElementById('vehicle-section-2');
             if (vehicleSection2) {
                 vehicleSection2.style.display = 'none';
                 console.log('Vehicle 2 section hidden');
-
-                // Clear the state for the files of Vehicle 2
                 state.lastOrFile2 = null;
                 state.lastCrFile2 = null;
             }
             vehicleCount--;
-
-            // Re-enable "Add Another Vehicle" button
             const addVehicleBtn = document.querySelector('.btn-add-vehicle');
             if (addVehicleBtn) {
                 addVehicleBtn.disabled = false;
                 addVehicleBtn.innerText = 'Add Another Vehicle';
             }
-
-            // Clear the second vehicle's inputs
             clearVehicleSection(2);
         }
     };
 
-    // Clear vehicle section inputs and file previews
     function clearVehicleSection(vehicleNumber) {
         console.log(`Clearing inputs for vehicle ${vehicleNumber}`);
-        
-        // Clear form fields
         document.getElementById(`license-plate-number-${vehicleNumber}`).value = '';
         document.getElementById(`registered-owner-province-${vehicleNumber}`).value = '';
         document.getElementById(`registered-owner-municipality-${vehicleNumber}`).innerHTML = '<option value="">Select Municipality</option>';
@@ -168,23 +219,21 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById(`color-${vehicleNumber}`).value = '';
         document.getElementById(`registered-owner-name-${vehicleNumber}`).value = '';
 
-        // Clear file inputs
         const orInput = document.getElementById(`or-reg-${vehicleNumber}`);
         const crInput = document.getElementById(`cr-reg-${vehicleNumber}`);
         const orPreview = document.getElementById(`or-reg-preview-${vehicleNumber}`);
         const crPreview = document.getElementById(`cr-reg-preview-${vehicleNumber}`);
 
         if (orInput && crInput) {
-            orInput.value = ''; // Clear the input
-            crInput.value = ''; // Clear the input
-            orPreview.style.display = 'none'; // Hide the preview
-            crPreview.style.display = 'none'; // Hide the preview
+            orInput.value = '';
+            crInput.value = '';
+            orPreview.style.display = 'none';
+            crPreview.style.display = 'none';
         }
 
         console.log(`Inputs for vehicle ${vehicleNumber} cleared`);
     }
 
-    // Store the last selected files
     const state = {
         lastDlFrontFile: null,
         lastDlBackFile: null,
@@ -194,13 +243,9 @@ document.addEventListener('DOMContentLoaded', function () {
         lastCrFile2: null,
     };
 
-    // Function to handle file preview
     function handleFilePreview(input, preview, lastFileVar) {
         const file = input.files[0];
-
-        if (!file && lastFileVar) {
-            return lastFileVar;
-        }
+        if (!file && lastFileVar) return lastFileVar;
 
         if (file && file.type.startsWith('image/')) {
             lastFileVar = file;
@@ -215,7 +260,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return null;
     }
 
-    // Bind events for file inputs (personal information)
     function initPersonalFilePreviews() {
         const dlFrontInput = document.getElementById('dl-reg-front');
         const dlBackInput = document.getElementById('dl-reg-back');
@@ -233,7 +277,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Bind events for file inputs (vehicles)
     function initFilePreviews(vehicleNumber) {
         const orInput = document.getElementById(`or-reg-${vehicleNumber}`);
         const crInput = document.getElementById(`cr-reg-${vehicleNumber}`);
@@ -251,11 +294,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Initialize file previews for personal information and Vehicle 1
     initPersonalFilePreviews();
-    initFilePreviews(1); // Ensure Vehicle 1 file previews are initialized
+    initFilePreviews(1);
 
-    // Image preview modal handling
     const imagePreviewModal = document.getElementById('imagePreviewModal');
     const modalImage = document.getElementById('modalImage');
     const previewCloseBtn = imagePreviewModal ? imagePreviewModal.querySelector('.close') : null;
@@ -276,7 +317,6 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     }
 
-    // Show warning modal for missing files
     function showWarningModal(missingFiles) {
         const warningList = document.getElementById('warning-list');
         if (warningList) {
@@ -322,27 +362,23 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    // Show confirmation modal after validation
     window.showConfirmationModal = function () {
         console.log("Triggered showConfirmationModal");
         const missingFiles = [];
 
-        // Validate personal info uploads
         if (!state.lastDlFrontFile) missingFiles.push("Driver's License (Front)");
         if (!state.lastDlBackFile) missingFiles.push("Driver's License (Back)");
 
-        // Validate vehicle section uploads for Vehicle 1
         if (!state.lastOrFile1) missingFiles.push("OR for Vehicle 1");
         if (!state.lastCrFile1) missingFiles.push("CR for Vehicle 1");
 
-        // Validate vehicle section uploads for Vehicle 2 (if vehicle 2 is added)
         if (vehicleCount === 2) {
             if (!state.lastOrFile2) missingFiles.push("OR for Vehicle 2");
             if (!state.lastCrFile2) missingFiles.push("CR for Vehicle 2");
         }
 
         if (missingFiles.length > 0) {
-            console.log("Missing files: ", missingFiles); // Debugging log
+            console.log("Missing files: ", missingFiles);
             showWarningModal(missingFiles);
         } else {
             updateConfirmationModal();
@@ -354,11 +390,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    // Update confirmation modal content with document previews and names
     function updateConfirmationModal() {
         let modalContent = '';
 
-        // Personal Info - Driver's License Front
         if (state.lastDlFrontFile) {
             modalContent += `<div><strong>Driver's License (Front):</strong><br>
                 <img src="${document.getElementById('dl-reg-preview-front').src}" alt="Driver's License Front" class="confirmation-img"><br>
@@ -368,7 +402,6 @@ document.addEventListener('DOMContentLoaded', function () {
             modalContent += `<strong>Driver's License (Front):</strong> Not uploaded<br>`;
         }
 
-        // Personal Info - Driver's License Back
         if (state.lastDlBackFile) {
             modalContent += `<div><strong>Driver's License (Back):</strong><br>
                 <img src="${document.getElementById('dl-reg-preview-back').src}" alt="Driver's License Back" class="confirmation-img"><br>
@@ -378,7 +411,6 @@ document.addEventListener('DOMContentLoaded', function () {
             modalContent += `<strong>Driver's License (Back):</strong> Not uploaded<br>`;
         }
 
-        // Vehicle 1 - OR
         if (state.lastOrFile1) {
             modalContent += `<div><strong>OR for Vehicle 1:</strong><br>
                 <img src="${document.getElementById('or-reg-preview-1').src}" alt="OR for Vehicle 1" class="confirmation-img"><br>
@@ -388,7 +420,6 @@ document.addEventListener('DOMContentLoaded', function () {
             modalContent += `<strong>OR for Vehicle 1:</strong> Not uploaded<br>`;
         }
 
-        // Vehicle 1 - CR
         if (state.lastCrFile1) {
             modalContent += `<div><strong>CR for Vehicle 1:</strong><br>
                 <img src="${document.getElementById('cr-reg-preview-1').src}" alt="CR for Vehicle 1" class="confirmation-img"><br>
@@ -398,25 +429,13 @@ document.addEventListener('DOMContentLoaded', function () {
             modalContent += `<strong>CR for Vehicle 1:</strong> Not uploaded<br>`;
         }
 
-        // Vehicle 2 (if applicable)
-        if (vehicleCount === 2) {
-            if (state.lastOrFile2) {
-                modalContent += `<div><strong>OR for Vehicle 2:</strong><br>
-                    <img src="${document.getElementById('or-reg-preview-2').src}" alt="OR for Vehicle 2" class="confirmation-img"><br>
-                    File Name: ${state.lastOrFile2.name}
-                </div><br>`;
-            } else {
-                modalContent += `<strong>OR for Vehicle 2:</strong> Not uploaded<br>`;
-            }
-
-            if (state.lastCrFile2) {
-                modalContent += `<div><strong>CR for Vehicle 2:</strong><br>
-                    <img src="${document.getElementById('cr-reg-preview-2').src}" alt="CR for Vehicle 2" class="confirmation-img"><br>
-                    File Name: ${state.lastCrFile2.name}
-                </div><br>`;
-            } else {
-                modalContent += `<strong>CR for Vehicle 2:</strong> Not uploaded<br>`;
-            }
+        if (state.lastCrFile2) {
+            modalContent += `<div><strong>CR for Vehicle 2:</strong><br>
+                <img src="${document.getElementById('cr-reg-preview-2').src}" alt="CR for Vehicle 2" class="confirmation-img"><br>
+                File Name: ${state.lastCrFile2.name}
+            </div><br>`;
+        } else {
+            modalContent += `<strong>CR for Vehicle 2:</strong> Not uploaded<br>`;
         }
 
         const confirmationModalContent = document.getElementById('confirmation-modal-content');
@@ -425,13 +444,156 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Trigger confirmation modal on submit
-    const submitButton = document.querySelector('.btn-submit');
-    if (submitButton) {
-        submitButton.addEventListener('click', function (event) {
-            event.preventDefault();
-            console.log("Submit button clicked");
-            showConfirmationModal();
+    function removeUnusedFields() {
+        // Disable Vehicle 2 fields if it is not added
+        if (vehicleCount < 2) {
+            const vehicle2Section = document.getElementById('vehicle-section-2');
+            if (vehicle2Section && vehicle2Section.style.display === 'none') {
+                vehicle2Section.querySelectorAll('input, select').forEach(field => field.disabled = true);
+            }
+        }
+
+        // Disable file inputs that have no selected file
+        document.querySelectorAll('input[type="file"]').forEach(input => {
+            if (!input.files.length) {
+                input.disabled = true;                document.getElementById('confirmSubmit').addEventListener('click', function (event) {
+                    if (validateFileTypes()) {
+                        removeUnusedFields();
+                        document.getElementById('vehicle-registration-form').submit();
+                        console.log("Form submitted");
+                    } else {
+                        event.preventDefault();
+                    }
+                });
+                
+                function validateFileTypes() {
+                    const validFileTypes = ['image/jpeg', 'image/png'];
+                    let isValid = true;
+                
+                    document.querySelectorAll('input[type="file"]').forEach(input => {
+                        if (input.files.length) {
+                            const fileType = input.files[0].type;
+                            if (!validFileTypes.includes(fileType)) {
+                                isValid = false;
+                                alert(`Invalid file type: ${fileType}. Please upload a JPG or PNG file.`);
+                            }
+                        }
+                    });
+                
+                    return isValid;
+                }
+                
+                function removeUnusedFields() {
+                    // Disable Vehicle 2 fields if it is not added
+                    if (vehicleCount < 2) {
+                        const vehicle2Section = document.getElementById('vehicle-section-2');
+                        if (vehicle2Section && vehicle2Section.style.display === 'none') {
+                            vehicle2Section.querySelectorAll('input, select').forEach(field => field.disabled = true);
+                        }
+                    }
+                
+                    // Disable file inputs that have no selected file
+                    document.querySelectorAll('input[type="file"]').forEach(input => {
+                        if (!input.files.length) {
+                            input.disabled = true;
+                        }
+                    });
+                }                document.getElementById('confirmSubmit').addEventListener('click', function (event) {
+                    if (validateFileTypes()) {
+                        removeUnusedFields();
+                        document.getElementById('vehicle-registration-form').submit();
+                        console.log("Form submitted");
+                    } else {
+                        event.preventDefault();
+                    }
+                });
+                
+                function validateFileTypes() {
+                    const validFileTypes = ['image/jpeg', 'image/png'];
+                    let isValid = true;
+                
+                    document.querySelectorAll('input[type="file"]').forEach(input => {
+                        if (input.files.length) {
+                            const fileType = input.files[0].type;
+                            if (!validFileTypes.includes(fileType)) {
+                                isValid = false;
+                                alert(`Invalid file type: ${fileType}. Please upload a JPG or PNG file.`);
+                            }
+                        }
+                    });
+                
+                    return isValid;
+                }
+                
+                function removeUnusedFields() {
+                    // Disable Vehicle 2 fields if it is not added
+                    if (vehicleCount < 2) {
+                        const vehicle2Section = document.getElementById('vehicle-section-2');
+                        if (vehicle2Section && vehicle2Section.style.display === 'none') {
+                            vehicle2Section.querySelectorAll('input, select').forEach(field => field.disabled = true);
+                        }
+                    }
+                
+                    // Disable file inputs that have no selected file
+                    document.querySelectorAll('input[type="file"]').forEach(input => {
+                        if (!input.files.length) {
+                            input.disabled = true;
+                        }
+                    });
+                }
+            }
         });
     }
+
+    function validateFileTypes() {
+        const validFileTypes = ['image/jpeg', 'image/png'];
+        let isValid = true;
+    
+        document.querySelectorAll('input[type="file"]').forEach(input => {
+            if (input.files.length) {
+                const fileType = input.files[0].type;
+                if (!validFileTypes.includes(fileType)) {
+                    isValid = false;
+                    alert(`Invalid file type: ${fileType}. Please upload a JPG or PNG file.`);
+                }
+            }
+        });
+    
+        return isValid;
+    }
+    
+    document.getElementById('confirmSubmit').addEventListener('click', function (event) {
+        if (validateFileTypes()) {
+            removeUnusedFields();
+            document.getElementById('vehicle-registration-form').submit();
+            console.log("Form submitted");
+        } else {
+            event.preventDefault();
+        }
+    });
+    
+    function removeUnusedFields() {
+        // Disable Vehicle 2 fields if it is not added
+        if (vehicleCount < 2) {
+            const vehicle2Section = document.getElementById('vehicle-section-2');
+            if (vehicle2Section && vehicle2Section.style.display === 'none') {
+                vehicle2Section.querySelectorAll('input, select').forEach(field => field.disabled = true);
+            }
+        }
+    
+        // Disable file inputs that have no selected file
+        document.querySelectorAll('input[type="file"]').forEach(input => {
+            if (!input.files.length) {
+                input.disabled = true;
+            }
+        });
+    }
+    
+    // Ensure the function is called before submitting the form
+    document.getElementById('confirmSubmit').addEventListener('click', function() {
+        removeUnusedFields();
+        document.getElementById('vehicle-registration-form').submit();
+    });
+    
+    
 });

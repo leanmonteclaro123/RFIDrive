@@ -78,7 +78,7 @@
                         {{ Auth::user()->username }} <i class="ri-arrow-down-s-line dropdown__arrow"></i>
                     </div>
                     <ul class="dropdown__menu">
-                        <li><a href="#" class="dropdown__link"><i class="ri-user-line"></i> Profile</a></li>
+                        <li><a href="{{ route('profile') }}" class="dropdown__link"><i class="ri-user-line"></i> Profile</a></li>
                         <li>
                             <a href="{{ route('logout') }}" class="dropdown__link"
                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -101,4 +101,22 @@
             </ul>
         </div>
     </nav>
+
+    <!-- Terms and Conditions Modal -->
+    <div id="termsModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Terms and Conditions</h2>
+            <p>Please read and agree to the terms and conditions before proceeding with the vehicle registration.</p>
+            <p>
+                <!-- You can add your terms and conditions text here -->
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vel sapien elit. In malesuada semper mi, nec bibendum ligula.
+            </p>
+            <div class="modal-footer">
+                <button id="acceptTerms" class="btn btn-primary">I Agree</button>
+                <button id="declineTerms" class="btn btn-secondary">Decline</button>
+            </div>
+        </div>
+    </div>
+
 </header>

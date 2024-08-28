@@ -2,15 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-
-namespace App\Models;
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
 class LoginModel extends Authenticatable
 {
@@ -36,9 +30,8 @@ class LoginModel extends Authenticatable
         'password', 'remember_token',
     ];
 
-    // Automatically hash passwords when they are set
-    // public function setPasswordAttribute($password)
-    // {
-    //     $this->attributes['password'] = bcrypt($password);
-    // }
+    public function vehicles()
+    {
+        return $this->hasMany(Vehicle::class, 'user_id');
+    }
 }
