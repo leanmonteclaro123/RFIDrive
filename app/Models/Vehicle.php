@@ -24,13 +24,18 @@ class Vehicle extends Model
         'registered_owner_zipcode'
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(LoginModel::class, 'user_id');
+    }
+
     public function documents()
     {
         return $this->hasMany(Document::class);
     }
 
-    public function user()
+    public function registrationRequest()
     {
-        return $this->belongsTo(LoginModel::class, 'user_id'); 
+        return $this->hasOne(RegistrationRequest::class);
     }
 }

@@ -17,9 +17,6 @@
                 </ul>
             </div>
             @endif
-
-            <form id="vehicle-registration-form" action="{{ route('vehicle.registration.store') }}" method="POST" enctype="multipart/form-data">
-                @csrf
             
                 <div class="registration-header text-center">
                     <h2>VEHICLE REGISTRATION FORM</h2>
@@ -60,28 +57,37 @@
 
                     <div class="upload-grid">
                         <div class="upload-group" data-label="Driver_License-front">
-                            <input name="documents[0][file]" type="file" id="dl-reg-front" class="form-control-file" accept=".jpg, .jpeg, .png" required>
+                            @if($user->driver_license_front)
+                                    <img id="driver-license-front-preview" src="{{ asset($user->driver_license_front) }}" alt="Driver License Front" class="img-preview"  onclick="openImageModal(this)">
+                                @else
+                                    <img id="driver-license-front-preview" class="img-preview" style="display:none;" onclick="openImageModal(this)">
+                                @endif
                             <img id="dl-reg-preview-front" class="img-preview" style="display:none;" alt="Driver License Front Preview">
                             <label for="dl-reg-front">
-                                <i class="fas fa-upload"></i>
                                 <span>Driver License (Front)</span>
                             </label>
                         </div>
                            
                         <div class="upload-group" data-label="Driver_License-back">
-                            <input name="documents[1][file]" type="file" id="dl-reg-back" class="form-control-file" accept=".jpg, .jpeg, .png" required>
+                            @if($user->driver_license_back)
+                                    <img id="driver-license-back-preview" src="{{ asset($user->driver_license_back) }}" alt="Driver License Back" class="img-preview" onclick="openImageModal(this)">
+                                @else
+                                    <img id="driver-license-back-preview" class="img-preview" style="display:none;" onclick="openImageModal(this)">
+                                @endif
                             <img id="dl-reg-preview-back" class="img-preview" style="display:none;" alt="Driver License Back Preview">
                             <label for="dl-reg-back">
-                                <i class="fas fa-upload"></i>
                                 <span>Driver License (Back)</span>
                             </label>
                         </div>
                     </div>
                     <div class="class form-grup">
-                        <label for="documents[0][expiry_date]" class="form-label">Expiry Date <span class="text-danger">*</span>:</label>
-                        <input type="date" name="documents[0][expiry_date]" class="form-control" required>
+                        <label for="driver_license_expiry_date" class="form-label">Expiry Date <span class="text-danger">*</span>:</label>
+                        <input type="date" class="form-control" name="driver_license_expiry_date" value="{{ $user->driver_license_expiry_date }}" required>
                     </div>
                 </div>
+            
+            <form id="vehicle-registration-form" action="{{ route('vehicle.registration.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
 
                 <!-- Vehicle Information -->
                 <div class="form-content" id="vehicle-sections">
@@ -151,7 +157,7 @@
 
                         <div class="upload-grid">
                             <div class="upload-group" data-label="OR-reg">
-                                <input name="documents[2][file]" type="file" id="or-reg-1" class="form-control-file" accept=".jpg, .jpeg, .png" required>
+                                <input name="documents[0][file]" type="file" id="or-reg-1" class="form-control-file" accept=".jpg, .jpeg, .png" required>
                                 <img id="or-reg-preview-1" class="img-preview or-preview" style="display:none;" alt="OR Preview">
                                 <label for="or-reg-1">
                                     <i class="fas fa-upload"></i>
@@ -160,7 +166,7 @@
                             </div>
 
                             <div class="upload-group" data-label="CR-reg">
-                                <input name="documents[3][file]" type="file" id="cr-reg-1" class="form-control-file" accept=".jpg, .jpeg, .png" required>
+                                <input name="documents[1][file]" type="file" id="cr-reg-1" class="form-control-file" accept=".jpg, .jpeg, .png" required>
                                 <img id="cr-reg-preview-1" class="img-preview cr-preview" style="display:none;" alt="CR Preview">
                                 <label for="cr-reg-1">
                                     <i class="fas fa-upload"></i>
@@ -169,8 +175,8 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="documents[2][expiry_date]" class="form-label">Expiry Date <span class="text-danger">*</span>:</label>
-                            <input type="date" name="documents[2][expiry_date]" class="form-control" required>
+                            <label for="documents[0][expiry_date]" class="form-label">Expiry Date <span class="text-danger">*</span>:</label>
+                            <input type="date" name="documents[0][expiry_date]" class="form-control" required>
                         </div>
                     </div>
 
@@ -241,7 +247,7 @@
 
                         <div class="upload-grid">
                             <div class="upload-group" data-label="OR-reg">
-                                <input name="documents[4][file]" type="file" id="or-reg-2" accept=".jpg, .jpeg, .png" class="form-control-file">
+                                <input name="documents[2][file]" type="file" id="or-reg-2" accept=".jpg, .jpeg, .png" class="form-control-file">
                                 <img id="or-reg-preview-2" class="img-preview or-preview" style="display:none;" alt="OR Preview">
                                 <label for="or-reg-2">
                                     <i class="fas fa-upload"></i>
@@ -250,7 +256,7 @@
                             </div>
                             
                             <div class="upload-group" data-label="CR-reg">
-                                <input name="documents[5][file]" type="file" id="cr-reg-2" accept=".jpg, .jpeg, .png" class="form-control-file">
+                                <input name="documents[3][file]" type="file" id="cr-reg-2" accept=".jpg, .jpeg, .png" class="form-control-file">
                                 <img id="cr-reg-preview-2" class="img-preview cr-preview" style="display:none;" alt="CR Preview">
                                 <label for="cr-reg-2">
                                     <i class="fas fa-upload"></i>
@@ -260,8 +266,8 @@
                         </div>
 
                         <div class="class form-group">
-                            <label for="documents[4][expiry_date]" class="form-label">Expiry Date <span class="text-danger">*</span>:</label>
-                            <input type="date" name="documents[4][expiry_date]" class="form-control" required>
+                            <label for="documents[2][expiry_date]" class="form-label">Expiry Date <span class="text-danger">*</span>:</label>
+                            <input type="date" name="documents[2][expiry_date]" class="form-control" required>
                         </div>
                         <button type="button" class="btn btn-danger remove-vehicle-btn" onclick="removeVehicle(2)">Remove Vehicle</button>
                     </div>
@@ -275,6 +281,81 @@
         </div>
     </div>
 </section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('incompleteProfileModal');
+    const closeBtn = modal.querySelector('.close');
+    const completeProfileBtn = document.getElementById('completeProfile');
+    const remindMeLaterBtn = document.getElementById('remindMeLater');
+    const registrationForm = document.getElementById('vehicle-registration-form');
+    const formOverlay = document.createElement('div');
+
+    // Disable the form and add an overlay to indicate it's disabled
+    function disableForm() {
+        registrationForm.style.pointerEvents = 'none';
+       
+        formOverlay.classList.add('form-overlay');
+        registrationForm.appendChild(formOverlay);
+    }
+
+    // Create and style the overlay element
+    formOverlay.style.position = 'absolute';
+    formOverlay.style.top = '0';
+    formOverlay.style.left = '0';
+    formOverlay.style.width = '100%';
+    formOverlay.style.height = '100%';
+    formOverlay.style.backgroundColor = 'rgba(255, 255, 255, 0.6)';
+    formOverlay.style.pointerEvents = 'none';
+
+    // Initially disable the form
+    disableForm();
+
+    // "Complete Profile" button redirects to the profile page
+    completeProfileBtn.addEventListener('click', function () {
+        window.location.href = "{{ route('profile') }}";
+    });
+
+    // "Remind Me Later" button allows exploring the site but keeps the form disabled
+    remindMeLaterBtn.addEventListener('click', function () {
+        modal.style.display = 'none';
+        alert("You can explore the site, but the Vehicle Registration form is disabled until you complete your profile.");
+        disableForm(); // Ensure the form stays disabled
+    });
+
+    // Close modal button will have the same functionality as "Remind Me Later"
+    closeBtn.addEventListener('click', function () {
+        modal.style.display = 'none';
+        alert("Vehicle registration is disabled until you complete your profile.");
+        disableForm(); // Ensure the form stays disabled
+    });
+
+    // Prevent closing the modal by clicking outside of it
+    window.onclick = function (event) {
+        if (event.target === modal) {
+            alert('You must complete your profile to proceed with vehicle registration.');
+        }
+    };
+});
+
+
+</script>
+
+<!-- Incomplete Profile Modal -->
+@if(session('incomplete_profile') || isset($incomplete_profile) && $incomplete_profile)
+    <div id="incompleteProfileModal" class="modal" style="display:block;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h4>Profile Incomplete</h4>
+            <p>Your profile is incomplete. Please complete your profile by uploading your driver's license information before proceeding with vehicle registration.</p>
+            <div class="modal-footer">
+                <button id="completeProfile" class="btn btn-primary">Complete Profile</button>
+                <button id="remindMeLater" class="btn btn-secondary">Remind Me Later</button>
+            </div>
+            
+        </div>
+    </div>
+@endif
 
 <!-- Confirmation Modal -->
 <div id="confirmationModal" class="modal">
@@ -323,4 +404,6 @@
 <link rel="stylesheet" href="{{ asset('css/vehicleRegistration.css') }}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 <script src="{{ asset('js/uploadFile.js') }}"></script>
+
+
 @endsection

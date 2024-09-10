@@ -369,3 +369,27 @@ h4 {
         padding: 10px;
     }
 }
+
+.form-overlay {
+    background-color: rgba(255, 255, 255, 0.6); /* Overlay opacity */
+    pointer-events: none; /* Prevent interactions with the form */
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: space-between; /* This will push the buttons to opposite sides */
+    flex-direction: row-reverse;
+    padding: 1rem; /* Add padding if needed */
+}
+
+.modal-footer .btn {
+    min-width: 120px; /* Ensure consistent button size */
+}
+
+#completeProfile {
+    margin-right: auto; /* Align Complete Profile button to the left */
+}
+
+#remindMeLater {
+    margin-left: auto; /* Align Remind Me Later button to the right */
+}

@@ -232,8 +232,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const state = {
-        lastDlFrontFile: null,
-        lastDlBackFile: null,
         lastOrFile1: null,
         lastCrFile1: null,
         lastOrFile2: null,
@@ -254,23 +252,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function initPersonalFilePreviews() {
-        const dlFrontInput = document.getElementById('dl-reg-front');
-        const dlBackInput = document.getElementById('dl-reg-back');
-        const dlFrontPreview = document.getElementById('dl-reg-preview-front');
-        const dlBackPreview = document.getElementById('dl-reg-preview-back');
-
-        if (dlFrontInput && dlBackInput) {
-            dlFrontInput.addEventListener('change', function () {
-                handleFilePreview(dlFrontInput, dlFrontPreview);
-            });
-
-            dlBackInput.addEventListener('change', function () {
-                handleFilePreview(dlBackInput, dlBackPreview);
-            });
-        }
-    }
-
     function initFilePreviews(vehicleNumber) {
         const orInput = document.getElementById(`or-reg-${vehicleNumber}`);
         const crInput = document.getElementById(`cr-reg-${vehicleNumber}`);
@@ -288,7 +269,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    initPersonalFilePreviews();
     initFilePreviews(1);
 
     const imagePreviewModal = document.getElementById('imagePreviewModal');
@@ -354,88 +334,57 @@ document.addEventListener('DOMContentLoaded', function () {
 
     window.showConfirmationModal = function () {
         const missingFiles = [];
-
-        if (!document.getElementById('dl-reg-front').files.length) missingFiles.push("Driver's License (Front)");
-        if (!document.getElementById('dl-reg-back').files.length) missingFiles.push("Driver's License (Back)");
-
-        if (!document.getElementById('or-reg-1').files.length) missingFiles.push("OR for Vehicle 1");
-        if (!document.getElementById('cr-reg-1').files.length) missingFiles.push("CR for Vehicle 1");
-
-        if (vehicleCount === 2) {
-            if (!document.getElementById('or-reg-2').files.length) missingFiles.push("OR for Vehicle 2");
-            if (!document.getElementById('cr-reg-2').files.length) missingFiles.push("CR for Vehicle 2");
-        }
-
-        if (missingFiles.length > 0) {
-            showWarningModal(missingFiles);
-        } else {
-            updateConfirmationModal();
-            document.getElementById('confirmationModal').style.display = 'block';
-        }
-    };
-
-    function updateConfirmationModal() {
         let modalContent = '';
-
-        if (document.getElementById('dl-reg-front').files.length) {
-            modalContent += `<div><strong>Driver's License (Front):</strong><br>
-                <img src="${document.getElementById('dl-reg-preview-front').src}" alt="Driver's License Front" class="confirmation-img"><br>
-                File Name: ${document.getElementById('dl-reg-front').files[0].name}
-            </div><br>`;
-        } else {
-            modalContent += `<strong>Driver's License (Front):</strong> Not uploaded<br>`;
-        }
-
-        if (document.getElementById('dl-reg-back').files.length) {
-            modalContent += `<div><strong>Driver's License (Back):</strong><br>
-                <img src="${document.getElementById('dl-reg-preview-back').src}" alt="Driver's License Back" class="confirmation-img"><br>
-                File Name: ${document.getElementById('dl-reg-back').files[0].name}
-            </div><br>`;
-        } else {
-            modalContent += `<strong>Driver's License (Back):</strong> Not uploaded<br>`;
-        }
-
+    
         if (document.getElementById('or-reg-1').files.length) {
             modalContent += `<div><strong>OR for Vehicle 1:</strong><br>
                 <img src="${document.getElementById('or-reg-preview-1').src}" alt="OR for Vehicle 1" class="confirmation-img"><br>
                 File Name: ${document.getElementById('or-reg-1').files[0].name}
             </div><br>`;
         } else {
-            modalContent += `<strong>OR for Vehicle 1:</strong> Not uploaded<br>`;
+            missingFiles.push("OR for Vehicle 1");
         }
-
+    
         if (document.getElementById('cr-reg-1').files.length) {
             modalContent += `<div><strong>CR for Vehicle 1:</strong><br>
                 <img src="${document.getElementById('cr-reg-preview-1').src}" alt="CR for Vehicle 1" class="confirmation-img"><br>
                 File Name: ${document.getElementById('cr-reg-1').files[0].name}
             </div><br>`;
         } else {
-            modalContent += `<strong>CR for Vehicle 1:</strong> Not uploaded<br>`;
+            missingFiles.push("CR for Vehicle 1");
         }
-
-        if (document.getElementById('or-reg-2').files.length) {
-            modalContent += `<div><strong>OR for Vehicle 2:</strong><br>
-                <img src="${document.getElementById('or-reg-preview-2').src}" alt="OR for Vehicle 2" class="confirmation-img"><br>
-                File Name: ${document.getElementById('or-reg-2').files[0].name}
-            </div><br>`;
+    
+        // Vehicle 2 Documents (only if vehicle 2 section is visible)
+        if (document.getElementById('vehicle-section-2').style.display !== 'none') {
+            if (document.getElementById('or-reg-2').files.length) {
+                modalContent += `<div><strong>OR for Vehicle 2:</strong><br>
+                    <img src="${document.getElementById('or-reg-preview-2').src}" alt="OR for Vehicle 2" class="confirmation-img"><br>
+                    File Name: ${document.getElementById('or-reg-2').files[0].name}
+                </div><br>`;
+            } else {
+                missingFiles.push("OR for Vehicle 2");
+            }
+    
+            if (document.getElementById('cr-reg-2').files.length) {
+                modalContent += `<div><strong>CR for Vehicle 2:</strong><br>
+                    <img src="${document.getElementById('cr-reg-preview-2').src}" alt="CR for Vehicle 2" class="confirmation-img"><br>
+                    File Name: ${document.getElementById('cr-reg-2').files[0].name}
+                </div><br>`;
+            } else {
+                missingFiles.push("CR for Vehicle 2");
+            }
+        }
+    
+        if (missingFiles.length > 0) {
+            showWarningModal(missingFiles);
         } else {
-            modalContent += `<strong>OR for Vehicle 2:</strong> Not uploaded<br>`;
+            const confirmationModalContent = document.getElementById('confirmation-modal-content');
+            if (confirmationModalContent) {
+                confirmationModalContent.innerHTML = modalContent;
+            }
+            document.getElementById('confirmationModal').style.display = 'block';
         }
-
-        if (document.getElementById('cr-reg-2').files.length) {
-            modalContent += `<div><strong>CR for Vehicle 2:</strong><br>
-                <img src="${document.getElementById('cr-reg-preview-2').src}" alt="CR for Vehicle 2" class="confirmation-img"><br>
-                File Name: ${document.getElementById('cr-reg-2').files[0].name}
-            </div><br>`;
-        } else {
-            modalContent += `<strong>CR for Vehicle 2:</strong> Not uploaded<br>`;
-        }
-
-        const confirmationModalContent = document.getElementById('confirmation-modal-content');
-        if (confirmationModalContent) {
-            confirmationModalContent.innerHTML = modalContent;
-        }
-    }
+    };
 
     function validateFileTypes() {
         const validFileTypes = ['image/jpeg', 'image/png'];
@@ -479,4 +428,7 @@ document.addEventListener('DOMContentLoaded', function () {
             event.preventDefault();
         }
     });
+
+    
+    
 });
