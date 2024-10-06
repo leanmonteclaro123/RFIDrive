@@ -91,13 +91,66 @@ document.addEventListener('DOMContentLoaded', function () {
     // Call updateIDLabel on page load
     updateIDLabel();
 
+    // Show or hide support document input based on user role for a specific vehicle
+    const userRole = document.getElementById('role').value;
+
+    function handleSupportDocumentRequirement(vehicleNumber) {
+        const supportDocsSection = document.getElementById(`support-doc-section-${vehicleNumber}`);
+        const supportDocInput = document.getElementById(`support-doc-${vehicleNumber}`);
+
+        if (userRole === 'Student' || userRole === 'Parent') {
+            // Show the support document section and make it required
+            supportDocsSection.style.display = 'block';
+            supportDocInput.required = true;
+        } else {
+            // Hide the support document section and remove required attribute
+            supportDocsSection.style.display = 'none';
+            supportDocInput.required = false;
+        }
+    }
+
+    // Apply the function to Vehicle 1 and Vehicle 2
+    handleSupportDocumentRequirement(1);
+    handleSupportDocumentRequirement(2);
+
+    // Function to handle the hiding of license plate for eBikes
+    function handleVehicleTypeChange(vehicleNumber) {
+        const vehicleTypeInputs = document.querySelectorAll(`input[name="radio-choice-h-2-vehicle${vehicleNumber}"]`);
+        const licensePlateInput = document.getElementById(`license-plate-number-${vehicleNumber}`);
+
+        vehicleTypeInputs.forEach(input => {
+            input.addEventListener('change', function () {
+                if (this.value === 'ebike') {
+                    licensePlateInput.closest('.form-group').style.display = 'none';
+                    licensePlateInput.required = false;
+                } else {
+                    licensePlateInput.closest('.form-group').style.display = 'block';
+                    licensePlateInput.required = true;
+                }
+            });
+        });
+
+        // Initialize license plate visibility based on selected type
+        const selectedVehicleType = document.querySelector(`input[name="radio-choice-h-2-vehicle${vehicleNumber}"]:checked`);
+        if (selectedVehicleType && selectedVehicleType.value === 'ebike') {
+            licensePlateInput.closest('.form-group').style.display = 'none';
+            licensePlateInput.required = false;
+        } else {
+            licensePlateInput.closest('.form-group').style.display = 'block';
+            licensePlateInput.required = true;
+        }
+    }
+
+    handleVehicleTypeChange(1);
+    handleVehicleTypeChange(2); // Initialize for Vehicle 1
+
     // Function to populate dropdowns for provinces, municipalities, barangays for any vehicle section
     function loadProvinces(vehicleNumber) {
         const provinceSelect = document.getElementById(`registered-owner-province-${vehicleNumber}`);
         const municipalitySelect = document.getElementById(`registered-owner-municipality-${vehicleNumber}`);
         const barangaySelect = document.getElementById(`registered-owner-barangay-${vehicleNumber}`);
         const zipCodeInput = document.getElementById(`registered-owner-zip-${vehicleNumber}`);
-    
+
         // Reset municipality and barangay dropdowns when province changes
         provinceSelect.addEventListener('change', function () {
             const provinceCode = this.options[this.selectedIndex].dataset.provinceCode;
@@ -118,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     .catch(error => console.error('Error fetching municipalities:', error));
             }
         });
-    
+
         municipalitySelect.addEventListener('change', function () {
             const municipalityCode = this.options[this.selectedIndex].dataset.municipalCode;
             if (municipalityCode) {
@@ -134,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         });
                     })
                     .catch(error => console.error('Error fetching barangays:', error));
-    
+
                 const selectedMunicipality = municipalitySelect.options[municipalitySelect.selectedIndex].text;
                 fetch(`/zipcode?municipality=${selectedMunicipality}`)
                     .then(response => response.json())
@@ -152,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
             }
         });
-    
+
         fetch('/provinces')
             .then(response => response.json())
             .then(data => {
@@ -167,16 +220,17 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch(error => console.error('Error fetching provinces:', error));
     }
-    
 
     loadProvinces(1);
 
     window.addVehicle = function () {
-        if (vehicleCount < 2) {
+        if (vehicleCount < 2) { // For now, only handling 2 vehicles
             const vehicleSection2 = document.getElementById('vehicle-section-2');
             if (vehicleSection2) {
                 vehicleSection2.style.display = 'block';
                 loadProvinces(2);
+                handleVehicleTypeChange(2); // Initialize type for Vehicle 2
+                handleSupportDocumentRequirement(2); // Check support document for Vehicle 2
             }
             vehicleCount++;
             const addVehicleBtn = document.querySelector('.btn-add-vehicle');
@@ -238,38 +292,60 @@ document.addEventListener('DOMContentLoaded', function () {
         lastCrFile2: null,
     };
 
-    function handleFilePreview(input, preview) {
-        const file = input.files[0];
-        if (file && file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        } else {
-            preview.style.display = 'none';
-        }
+    
+
+    
+
+    // Generic function to handle file input and display preview
+    function handleFileInput(inputElement, previewElement) {
+        inputElement.addEventListener('change', function () {
+            const file = inputElement.files[0];
+            if (file) {
+                const fileType = file.type;
+                
+                if (fileType.startsWith('image/')) {
+                    // Handle image preview
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        previewElement.src = e.target.result;
+                        previewElement.style.display = 'block'; // Show image
+                        previewElement.closest('.upload-group').querySelector('.file-info').innerHTML = ''; // Clear file info
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    // Handle non-image file (PDF, Word, etc.)
+                    previewElement.style.display = 'none'; // Hide image preview
+                    const fileInfoElement = previewElement.closest('.upload-group').querySelector('.file-info');
+                    fileInfoElement.innerHTML = `<img src="` + pdfIconUrl + `" alt="PDF" style="height:100%; width:100%;"> ${file.name}`;
+
+
+                }
+            }
+        });
+    }
+
+    // Initialize previews for the first vehicle (Vehicle 1)
+    initFilePreviews(1);
+
+    // Initialize previews for the second vehicle (Vehicle 2) if it exists
+    if (document.getElementById('vehicle-section-2')) {
+        initFilePreviews(2);
     }
 
     function initFilePreviews(vehicleNumber) {
         const orInput = document.getElementById(`or-reg-${vehicleNumber}`);
         const crInput = document.getElementById(`cr-reg-${vehicleNumber}`);
+        const supportDocInput = document.getElementById(`support-doc-${vehicleNumber}`);
         const orPreview = document.getElementById(`or-reg-preview-${vehicleNumber}`);
         const crPreview = document.getElementById(`cr-reg-preview-${vehicleNumber}`);
+        const supportDocPreview = document.getElementById(`support-doc-preview-${vehicleNumber}`);
 
-        if (orInput && crInput) {
-            orInput.addEventListener('change', function () {
-                handleFilePreview(orInput, orPreview);
-            });
-
-            crInput.addEventListener('change', function () {
-                handleFilePreview(crInput, crPreview);
-            });
-        }
+        // Attach event listeners for OR, CR, and Support Documents
+        handleFileInput(orInput, orPreview);
+        handleFileInput(crInput, crPreview);
+        handleFileInput(supportDocInput, supportDocPreview);
     }
 
-    initFilePreviews(1);
 
     const imagePreviewModal = document.getElementById('imagePreviewModal');
     const modalImage = document.getElementById('modalImage');
@@ -335,7 +411,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.showConfirmationModal = function () {
         const missingFiles = [];
         let modalContent = '';
-    
+
         if (document.getElementById('or-reg-1').files.length) {
             modalContent += `<div><strong>OR for Vehicle 1:</strong><br>
                 <img src="${document.getElementById('or-reg-preview-1').src}" alt="OR for Vehicle 1" class="confirmation-img"><br>
@@ -344,7 +420,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             missingFiles.push("OR for Vehicle 1");
         }
-    
+
         if (document.getElementById('cr-reg-1').files.length) {
             modalContent += `<div><strong>CR for Vehicle 1:</strong><br>
                 <img src="${document.getElementById('cr-reg-preview-1').src}" alt="CR for Vehicle 1" class="confirmation-img"><br>
@@ -353,7 +429,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             missingFiles.push("CR for Vehicle 1");
         }
-    
+
         // Vehicle 2 Documents (only if vehicle 2 section is visible)
         if (document.getElementById('vehicle-section-2').style.display !== 'none') {
             if (document.getElementById('or-reg-2').files.length) {
@@ -364,7 +440,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 missingFiles.push("OR for Vehicle 2");
             }
-    
+
             if (document.getElementById('cr-reg-2').files.length) {
                 modalContent += `<div><strong>CR for Vehicle 2:</strong><br>
                     <img src="${document.getElementById('cr-reg-preview-2').src}" alt="CR for Vehicle 2" class="confirmation-img"><br>
@@ -374,7 +450,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 missingFiles.push("CR for Vehicle 2");
             }
         }
-    
+
         if (missingFiles.length > 0) {
             showWarningModal(missingFiles);
         } else {
@@ -430,5 +506,5 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     
-    
+
 });

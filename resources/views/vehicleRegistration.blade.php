@@ -58,9 +58,9 @@
                     <div class="upload-grid">
                         <div class="upload-group" data-label="Driver_License-front">
                             @if($user->driver_license_front)
-                                    <img id="driver-license-front-preview" src="{{ asset($user->driver_license_front) }}" alt="Driver License Front" class="img-preview"  onclick="openImageModal(this)">
+                                    <img id="driver-license-front-preview" src="{{ asset($user->driver_license_front) }}" alt="Driver License Front" class="img-preview"  >
                                 @else
-                                    <img id="driver-license-front-preview" class="img-preview" style="display:none;" onclick="openImageModal(this)">
+                                    <img id="driver-license-front-preview" class="img-preview" style="display:none;" >
                                 @endif
                             <img id="dl-reg-preview-front" class="img-preview" style="display:none;" alt="Driver License Front Preview">
                             <label for="dl-reg-front">
@@ -70,9 +70,9 @@
                            
                         <div class="upload-group" data-label="Driver_License-back">
                             @if($user->driver_license_back)
-                                    <img id="driver-license-back-preview" src="{{ asset($user->driver_license_back) }}" alt="Driver License Back" class="img-preview" onclick="openImageModal(this)">
+                                    <img id="driver-license-back-preview" src="{{ asset($user->driver_license_back) }}" alt="Driver License Back" class="img-preview" >
                                 @else
-                                    <img id="driver-license-back-preview" class="img-preview" style="display:none;" onclick="openImageModal(this)">
+                                    <img id="driver-license-back-preview" class="img-preview" style="display:none;" >
                                 @endif
                             <img id="dl-reg-preview-back" class="img-preview" style="display:none;" alt="Driver License Back Preview">
                             <label for="dl-reg-back">
@@ -81,7 +81,7 @@
                         </div>
                     </div>
                     <div class="class form-grup">
-                        <label for="driver_license_expiry_date" class="form-label">Expiry Date <span class="text-danger">*</span>:</label>
+                        <label for="driver_license_expiry_date" class="form-label">Driver License Expiry Date<span class="text-danger">*</span>:</label>
                         <input type="date" class="form-control" name="driver_license_expiry_date" value="{{ $user->driver_license_expiry_date }}" required>
                     </div>
                 </div>
@@ -91,9 +91,21 @@
 
                 <!-- Vehicle Information -->
                 <div class="form-content" id="vehicle-sections">
+                    
                     <!-- Initial Vehicle Information (Vehicle 1) -->
                     <div class="card shadow-sm mb-4 p-3 vehicle-section" id="vehicle-section-1">
                         <h4>Vehicle Information (Vehicle 1)</h4>
+                        <div class="card shadow-sm mb-4 p-3">
+                            <div class="form-group">
+                                <fieldset data-role="controlgroup" data-type="horizontal">
+                                    <h5>Vehicle Type</h5>
+                                    <input type="radio" name="radio-choice-h-2-vehicle1" id="radio-choice-h-2a-vehicle1" value="motorcycle">
+                                    <label for="radio-choice-h-2a-vehicle1">FEULED VEHICLE</label>
+                                    <input type="radio" name="radio-choice-h-2-vehicle1" id="radio-choice-h-2b-vehicle1" value="ebike">
+                                    <label for="radio-choice-h-2b-vehicle1">ELECTRIC VEHICLE</label>
+                                </fieldset>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label for="license-plate-number-1">License Plate No. <span class="text-danger">*</span>:</label>
                             <input name="vehicles[0][license_plate]" type="text" id="license-plate-number-1" class="form-control" required placeholder="Enter License Plate No.">
@@ -120,7 +132,7 @@
                                 <input name="vehicles[0][color]" type="text" id="color-1" class="form-control" required placeholder="Enter Color">
                             </div>
                         </div>
-
+                        
                         <div class="form-group">
                             <label for="registered-owner-name-1">Registered Owner's Name <span class="text-danger">*</span>:</label>
                             <input name="vehicles[0][registered_owner_name]" type="text" id="registered-owner-name-1" class="form-control" required placeholder="Enter Registered Owner's Name">
@@ -154,8 +166,10 @@
                             <label for="registered-owner-zip-1">Postal/ZIP Code <span class="text-danger">*</span>:</label>
                             <input name="vehicles[0][registered_owner_zipcode]" type="text" id="registered-owner-zip-1" class="form-control" required placeholder="Enter ZIP Code">
                         </div>
-
+                        <h5>Vehicle Document</h5>
                         <div class="upload-grid">
+
+                            <!-- Official Reciept field -->
                             <div class="upload-group" data-label="OR-reg">
                                 <input name="documents[0][file]" type="file" id="or-reg-1" class="form-control-file" accept=".jpg, .jpeg, .png" required>
                                 <img id="or-reg-preview-1" class="img-preview or-preview" style="display:none;" alt="OR Preview">
@@ -165,6 +179,7 @@
                                 </label>
                             </div>
 
+                            <!-- Certificate of Registration field -->
                             <div class="upload-group" data-label="CR-reg">
                                 <input name="documents[1][file]" type="file" id="cr-reg-1" class="form-control-file" accept=".jpg, .jpeg, .png" required>
                                 <img id="cr-reg-preview-1" class="img-preview cr-preview" style="display:none;" alt="CR Preview">
@@ -173,17 +188,57 @@
                                     <span>Upload CR</span>
                                 </label>
                             </div>
+
+                            <!-- Certificate of Ownership field for the Electronic vehicle -->
+                            <div class="upload-group" id="certificate-ownership-group" style="display: none;">
+                                <input name="documents[2][file]" type="file" id="certificate-ownership" class="form-control-file" accept=".jpg, .jpeg, .png">
+                                <label for="certificate-ownership">
+                                    <i class="fas fa-upload"></i>
+                                    <span>Upload Certificate of Ownership</span>
+                                </label>
+                            </div>
+                            
                         </div>
+
                         <div class="form-group">
-                            <label for="documents[0][expiry_date]" class="form-label">Expiry Date <span class="text-danger">*</span>:</label>
+                            <label for="documents[0][expiry_date]" class="form-label">OR/CR Expiry Date <span class="text-danger">*</span>:</label>
                             <input type="date" name="documents[0][expiry_date]" class="form-control" required>
                         </div>
+
+                        <!-- Vehicle 1 Support Document Section -->
+                        <div class="form-group support-document" id="support-doc-section-1" style="display: none;">
+                            <fieldset data-role="controlgroup" data-type="horizontal">
+                                <h5>Support Document (Vehicle 1)</h5>
+                                <div class="upload-group" data-label="Support Document">
+                                    <input name="documents[2][file]" type="file" id="support-doc-1" class="form-control-file" accept=".pdf">
+                                    <div id="support-doc-preview-1"></div> <!-- This div will show the file name and icon -->
+                                    <div class="file-info"></div> <!-- New div to show file name and icon -->
+                                    <label for="support-doc-1">
+                                        <i class="fas fa-upload"></i>
+                                        <span>Upload Support Document</span>
+                                    </label>
+                                </div>
+                            </fieldset>
+                        </div>
+                        
+                        
                     </div>
 
                     <!-- Vehicle 2 Section (Hidden initially) -->
                     <div class="card shadow-sm mb-4 p-3 vehicle-section" id="vehicle-section-2" style="display:none;">
                         <h4>Vehicle Information (Vehicle 2)</h4>
-                        <!-- Same fields for the second vehicle as Vehicle 1 -->
+                        <div class="card shadow-sm mb-4 p-3">
+                            <div class="form-group">
+                                <fieldset data-role="controlgroup" data-type="horizontal">
+                                    <legend>Vehicle Type</legend>
+                                    <input type="radio" name="radio-choice-h-2-vehicle2" id="radio-choice-h-2a-vehicle2" value="motorcycle">
+                                    <label for="radio-choice-h-2a-vehicle2">FUELD VEHICLE</label>
+                                    <input type="radio" name="radio-choice-h-2-vehicle2" id="radio-choice-h-2b-vehicle2" value="ebike">
+                                    <label for="radio-choice-h-2b-vehicle2">ELECTRONIC VEHICLE</label>
+                                </fieldset>
+                            </div>
+                        </div>
+                        
                         <div class="form-group">
                             <label for="license-plate-number-2">License Plate No. <span class="text-danger">*</span>:</label>
                             <input name="vehicles[1][license_plate]" type="text" id="license-plate-number-2" class="form-control" placeholder="Enter License Plate No.">
@@ -247,7 +302,7 @@
 
                         <div class="upload-grid">
                             <div class="upload-group" data-label="OR-reg">
-                                <input name="documents[2][file]" type="file" id="or-reg-2" accept=".jpg, .jpeg, .png" class="form-control-file">
+                                <input name="documents[3][file]" type="file" id="or-reg-2" accept=".jpg, .jpeg, .png" class="form-control-file">
                                 <img id="or-reg-preview-2" class="img-preview or-preview" style="display:none;" alt="OR Preview">
                                 <label for="or-reg-2">
                                     <i class="fas fa-upload"></i>
@@ -256,7 +311,7 @@
                             </div>
                             
                             <div class="upload-group" data-label="CR-reg">
-                                <input name="documents[3][file]" type="file" id="cr-reg-2" accept=".jpg, .jpeg, .png" class="form-control-file">
+                                <input name="documents[4][file]" type="file" id="cr-reg-2" accept=".jpg, .jpeg, .png" class="form-control-file">
                                 <img id="cr-reg-preview-2" class="img-preview cr-preview" style="display:none;" alt="CR Preview">
                                 <label for="cr-reg-2">
                                     <i class="fas fa-upload"></i>
@@ -266,9 +321,26 @@
                         </div>
 
                         <div class="class form-group">
-                            <label for="documents[2][expiry_date]" class="form-label">Expiry Date <span class="text-danger">*</span>:</label>
-                            <input type="date" name="documents[2][expiry_date]" class="form-control" required>
+                            <label for="documents[3][expiry_date]" class="form-label">Expiry Date <span class="text-danger">*</span>:</label>
+                            <input type="date" name="documents[3][expiry_date]" class="form-control" required>
                         </div>
+
+                        <!-- Vehicle 2 Support Document Section -->
+                        <div class="form-group support-document" id="support-doc-section-2" style="display: none;">
+                            <fieldset data-role="controlgroup" data-type="horizontal">
+                                <h5>Support Document (Vehicle 2)</h5>
+                                <div class="upload-group" data-label="Support Document">
+                                    <input name="documents[5][file]" type="file" id="support-doc-2" class="form-control-file" accept=".pdf">
+                                    <div id="support-doc-preview-2"></div> <!-- This div will show the file name and icon -->
+                                    <div class="file-info"></div> <!-- New div to show file name and icon -->
+                                    <label for="support-doc-2">
+                                        <i class="fas fa-upload"></i>
+                                        <span>Upload Support Document</span>
+                                    </label>
+                                </div>
+                            </fieldset>
+                        </div>
+
                         <button type="button" class="btn btn-danger remove-vehicle-btn" onclick="removeVehicle(2)">Remove Vehicle</button>
                     </div>
                 </div>
@@ -282,10 +354,15 @@
     </div>
 </section>
 
+<script type="text/javascript">
+    var pdfIconUrl = "{{ asset('images/pdficon.jpg') }}";
+</script>
+
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
     const modal = document.getElementById('incompleteProfileModal');
-    const closeBtn = modal.querySelector('.close');
+    const closeBtn = modal ? modal.querySelector('.close') : null;
     const completeProfileBtn = document.getElementById('completeProfile');
     const remindMeLaterBtn = document.getElementById('remindMeLater');
     const registrationForm = document.getElementById('vehicle-registration-form');
@@ -293,10 +370,11 @@
 
     // Disable the form and add an overlay to indicate it's disabled
     function disableForm() {
-        registrationForm.style.pointerEvents = 'none';
-       
-        formOverlay.classList.add('form-overlay');
-        registrationForm.appendChild(formOverlay);
+        if (registrationForm) {
+            registrationForm.style.pointerEvents = 'none';
+            formOverlay.classList.add('form-overlay');
+            registrationForm.appendChild(formOverlay);
+        }
     }
 
     // Create and style the overlay element
@@ -308,35 +386,46 @@
     formOverlay.style.backgroundColor = 'rgba(255, 255, 255, 0.6)';
     formOverlay.style.pointerEvents = 'none';
 
-    // Initially disable the form
-    disableForm();
+    // Disable the form initially if modal exists
+    if (modal) {
+        disableForm();
+    }
 
     // "Complete Profile" button redirects to the profile page
-    completeProfileBtn.addEventListener('click', function () {
-        window.location.href = "{{ route('profile') }}";
-    });
+    if (completeProfileBtn) {
+        completeProfileBtn.addEventListener('click', function () {
+            window.location.href = "{{ route('profile') }}";
+        });
+    }
 
     // "Remind Me Later" button allows exploring the site but keeps the form disabled
-    remindMeLaterBtn.addEventListener('click', function () {
-        modal.style.display = 'none';
-        alert("You can explore the site, but the Vehicle Registration form is disabled until you complete your profile.");
-        disableForm(); // Ensure the form stays disabled
-    });
+    if (remindMeLaterBtn) {
+        remindMeLaterBtn.addEventListener('click', function () {
+            modal.style.display = 'none';
+            alert("You can explore the site, but the Vehicle Registration form is disabled until you complete your profile.");
+            disableForm();
+        });
+    }
 
     // Close modal button will have the same functionality as "Remind Me Later"
-    closeBtn.addEventListener('click', function () {
-        modal.style.display = 'none';
-        alert("Vehicle registration is disabled until you complete your profile.");
-        disableForm(); // Ensure the form stays disabled
-    });
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function () {
+            modal.style.display = 'none';
+            alert("Vehicle registration is disabled until you complete your profile.");
+            disableForm();
+        });
+    }
 
     // Prevent closing the modal by clicking outside of it
     window.onclick = function (event) {
-        if (event.target === modal) {
+        if (modal && event.target === modal) {
             alert('You must complete your profile to proceed with vehicle registration.');
         }
     };
+    window.pdfIcon = "{{ asset('images/bsu_logo.png') }}";
+
 });
+
 
 
 </script>

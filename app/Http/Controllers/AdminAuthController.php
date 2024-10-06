@@ -10,24 +10,45 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminAuthController extends Controller
 {
-    public function showRequests()
+    public function showProfile()
     {
-        $requests = RegistrationRequest::with('user', 'vehicles', 'documents')->where('status', 'pending')->get();
-        return view('admin', compact('requests'));
+        $admin = Auth::guard('admin')->user();
+        return view('admin.profile', compact('admin'));
     }
 
 
+    public function showDashboard()
+    {
+        // You can pass data to the dashboard view if needed
+        return view('admin.dashboard');
+    }
+
+    // Show pending registration requests
+    public function showRequests()
+    {
+        $requests = RegistrationRequest::with('user') // Only load 'user', no 'vehicles' or 'documents'
+            ->where('status', 'pending')
+            ->get();
+        
+        return view('admin.requests', compact('requests'));
+    }
+
+
+    // Show login form
     public function showLoginForm()
     {
         return view('adminLogin'); // Adjust this if your view is in a different folder
     }
 
+    // Show all users with registration requests
     public function showAllUsersWithRequests()
     {
-        $allrequests = RegistrationRequest::with('user', 'vehicles', 'documents')->get();
-        return view('admin', compact('requests'));
+        $requests = RegistrationRequest::with('user')->where('status', 'approved')->get();
+
+        return view('admin.registries', compact('requests'));
     }
-    
+
+    // Update registration request status (approved/rejected)
     public function updateRequestStatus(Request $request, $id)
     {
         $request->validate([
@@ -44,6 +65,7 @@ class AdminAuthController extends Controller
         return redirect()->route('admin.requests.index')->with('success', 'Request updated successfully.');
     }
 
+    // Handle admin login
     public function login(Request $request)
     {
         // Validate the login credentials
@@ -65,11 +87,10 @@ class AdminAuthController extends Controller
         ]);
     }
 
+    // Handle admin logout
     public function logout()
     {
         Auth::guard('admin')->logout();
         return redirect()->route('admin.login');
-    }    
-
-
+    }
 }

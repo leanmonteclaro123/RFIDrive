@@ -7,67 +7,70 @@ use App\Http\Controllers\VehicleRegistrationController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\ProfileController;
 
-// Landing page is accessible by everyone (no authentication required)
+// Landing page accessible by everyone
 Route::get('/', [LoginController::class, 'landing'])->name('landing');
 
-// Login page is only accessible to guests (non-authenticated users)
-Route::get('/login', function() {
-    return view('login');
-})->name('login')->middleware('guest');
+// Guest routes for login and registration
+Route::middleware('guest')->group(function () {
+    Route::get('/login', function () {
+        return view('login');
+    })->name('login');
+    
+    Route::get('/register', [LoginController::class, 'showRegistrationForm'])->name('register');
+    Route::post('/register', [LoginController::class, 'register'])->name('register');
+    Route::post('/login', [LoginController::class, 'login'])->name('login.post');
+});
 
-// Registration routes also only accessible to guests
-Route::get('/register', [LoginController::class, 'showRegistrationForm'])->name('register')->middleware('guest');
-Route::post('/register', [LoginController::class, 'register'])->name('register');
-Route::post('/login', [LoginController::class, 'login'])->name('login.post');
-
-// Logout route
+// Logout route (user authentication)
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-// PSGC Routes (publicly accessible)
+// Publicly accessible PSGC routes
 Route::get('/provinces', [PSGCController::class, 'getProvinces']);
 Route::get('/municipalities/{provinceCode}', [PSGCController::class, 'getMunicipalities']);
 Route::get('/barangays/{municipalityCode}', [PSGCController::class, 'getBarangays']);
 Route::get('/zipcode', [PSGCController::class, 'getZipCode']);
 
-// Landing page route
-Route::get('/landinghome', function() {
-    return view('landing');
-})->name('home');
+// Static pages
+Route::view('/landinghome', 'landing')->name('home');
+Route::view('/guidelines', 'guidelines')->name('guidelines');
 
-// Guidelines page route
-Route::get('/guidelines', function() {
-    return view('guidelines');
-})->name('guidelines');
-
-// Routes that require authentication
-Route::middleware(['auth'])->group(function () {
+// Routes requiring user authentication
+Route::middleware('auth')->group(function () {
     // Vehicle Registration routes
     Route::get('/vehicle-registration', [VehicleRegistrationController::class, 'create'])->name('vehicle.registration');
     Route::post('/vehicle-registration', [VehicleRegistrationController::class, 'store'])->name('vehicle.registration.store');
     
-    // Profile route
+    // Profile routes
     Route::get('/profile', [LoginController::class, 'showProfile'])->name('profile');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
 
-// Admin routes
+// Admin routes with prefix
 Route::prefix('admin')->group(function () {
+    // Guest routes for admin login
     Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
     Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login.post');
-    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout'); 
     
-    // Routes that require admin authentication
+    // Routes requiring admin authentication
     Route::middleware('auth:admin')->group(function () {
-        Route::get('/dashboard', [AdminAuthController::class, 'showRequests'])->name('admin.dashboard');
+        // Admin dashboard
+        Route::get('/dashboard', [AdminAuthController::class, 'showDashboard'])->name('admin.dashboard');
+
+        // Requests table (registration requests)
+        Route::get('/requests', [AdminAuthController::class, 'showRequests'])->name('admin.requests');
+        Route::get('/admin/requests', [AdminAuthController::class, 'showRequests'])->name('admin.requests.index');
+
         Route::patch('/requests/{id}', [AdminAuthController::class, 'updateRequestStatus'])->name('admin.requests.update');
-        
+
+        // Registries table (show all users with registration requests)
+        Route::get('/registries', [AdminAuthController::class, 'showAllUsersWithRequests'])->name('admin.registries');
+
+        // Admin profile route
+        Route::get('/profile', [AdminAuthController::class, 'showProfile'])->name('admin.profile'); // Define the admin profile route here
     });
 });
 
-// If needed, public route for admin requests
-Route::get('/admin/requests', [AdminAuthController::class, 'showRequests'])->name('admin.requests.index');
-Route::patch('/admin/requests/{id}', [AdminAuthController::class, 'updateRequestStatus'])->name('admin.requests.update');
-// Route::get('/admin/registries', [AdminAuthController::class, 'showApprovedRegistries'])->name('admin.registries');
-// Updated route for showing all users with registration requests
-Route::get('/admin/registries', [AdminAuthController::class, 'showAllUsersWithRequests'])->name('admin.registries');
-
+Route::get('/security', function () {
+    return view('PersonnelLayout');
+})->name('PersonnelLayout');

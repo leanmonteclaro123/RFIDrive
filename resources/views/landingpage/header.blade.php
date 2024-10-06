@@ -23,13 +23,36 @@
                 @if(Auth::check())
                     <li class="dropdown__item" id="dropdown1">
                         <div class="nav__link" style="cursor: default">
-                            Registration<i class="ri-arrow-down-s-line dropdown__arrow"></i>
+                           Vehicle <i class="ri-arrow-down-s-line dropdown__arrow"></i>
                         </div>
 
                         <ul class="dropdown__menu">
+                            
+                            <!--=============== DROPDOWN SUBMENU ===============-->
+                            {{-- <li class="dropdown__subitem">
+                                <div class="dropdown__link">
+                                    <i  class="ri-bar-chart-line"></i>  Registration <i class="ri-add-line dropdown__add"></i>
+                                    
+                                </div>
+
+                                <ul class="dropdown__submenu">
+                                    <li>
+                                        <a href="{{ route('vehicle.registration') }}" class="dropdown__link ">
+                                            <i class="ri-pie-chart-line"></i>Fueled Vehicle
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('hybrid.vehicle.registration') }}" class="dropdown__link ">
+                                            <i class="ri-pie-chart-line"></i>Electronic Vehicle
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li> --}}
+
+                            <!--=============== DROPDOWN ===============-->
                             <li>
                                 <a href="{{ route('vehicle.registration') }}" class="dropdown__link ">
-                                    <i class="ri-pie-chart-line"></i>Registration
+                                    <i class="ri-folder-user-line"></i>Registration
                                 </a>
                             </li>
                             <li>
@@ -38,38 +61,9 @@
                                 </a>
                             </li>
 
-                            <!--=============== DROPDOWN SUBMENU ===============-->
-                            <li class="dropdown__subitem">
-                                <div class="dropdown__link">
-                                    <i class="ri-bar-chart-line"></i> Reports <i class="ri-add-line dropdown__add"></i>
-                                </div>
-
-                                <ul class="dropdown__submenu">
-                                    <li>
-                                        <a href="#" class="dropdown__sublink">
-                                            <i class="ri-file-list-line"></i> Documents
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="dropdown__sublink">
-                                            <i class="ri-cash-line"></i> Payments
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="dropdown__sublink">
-                                            <i class="ri-refund-2-line"></i> Refunds
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
                         </ul>
                     </li>
                 @endif  
-
-                {{-- <li><a href="{{ route('guidelines') }}" class="nav__link {{ Request::routeIs('guidelines') ? 'active' : '' }}">Guidelines</a></li> --}}
-
-                <li><a href="#" class="nav__link" data-target="contact_us">Contact</a></li>
-                
 
                 @if(Auth::check())
                 <!-- If user is logged in, show username and logout -->

@@ -328,3 +328,112 @@ select option:first-child {
     height: 150px;
   width: 150px;
 }
+
+/*error message*/
+.error-message {
+    color: red;
+    font-size: 0.875rem;
+    margin-top: 5px; /* Adds a little spacing between the input and the error message */
+    display: block;
+}
+
+
+/* Modal Styles */
+.modal {
+    visibility: hidden; /* Hidden by default */
+    opacity: 0; /* Transparent by default */
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    width: 100vw; /* Full viewport width */
+    height: 100vh; /* Full viewport height */
+    background-color: rgba(0, 0, 0, 0.5); /* Dark overlay */
+    display: flex; /* Flexbox for centering */
+    align-items: center; /* Vertically center */
+    justify-content: center; /* Horizontally center */
+    transition: visibility 0.3s, opacity 0.3s ease; /* Smooth fade-in and fade-out */
+}
+
+/* When the modal is shown, using .show class */
+.modal.show {
+    visibility: visible; /* Visible */
+    opacity: 1; /* Fully opaque */
+}
+
+/* Modal content styling */
+.modal-content {
+    background-color: white;
+    border-radius: 10px;
+    padding: 40px;
+    text-align: center;
+    width: 350px;
+    max-width: 90%; /* Ensures responsiveness on smaller screens */
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+    position: relative;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Success icon styling */
+.modal-icon-wrapper {
+    position: absolute;
+    top: -35px;
+    left: 50%;
+    transform: translateX(-50%); /* Center horizontally */
+    width: 70px;
+    height: 70px;
+    background-color: #28a745;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.modal-icon-wrapper img {
+    width: 100%;
+    height: auto;
+}
+
+/* Modal header and text */
+.modal h2 {
+    font-size: 24px;
+    color: #333;
+    margin-top: 50px; /* Spacing below icon */
+    margin-bottom: 10px;
+}
+
+.modal p {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 30px;
+}
+
+/* Button styling */
+.modal-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    width: 100%;
+    box-shadow: 0px 4px 10px rgba(40, 167, 69, 0.3);
+    transition: background-color 0.3s ease;
+}
+
+.modal-btn:hover {
+    background-color: #218838;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
