@@ -12,6 +12,7 @@ class Vehicle extends Model
     protected $fillable = [
         'user_id',
         'license_plate',
+        'vehicle_type', // New field
         'province',
         'make', 
         'model', 

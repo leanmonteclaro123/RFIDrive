@@ -341,6 +341,12 @@
                     @foreach($vehicles as $vehicleIndex => $vehicle)
                     <div class="card shadow-sm mb-4 p-3 vehicle-section">
                         <h4>Vehicle Information (Vehicle {{ $vehicleIndex + 1 }})</h4>
+
+                        <div class="form-group">
+                            <label>Vehicle Type:</label>
+                            <input type="text" class="form-control" readonly value="{{ ucfirst($vehicle->vehicle_type) }}">
+                        </div>
+                        
                         <div class="form-group">
                             <label>License Plate No.:</label>
                             <input type="text" class="form-control" readonly value="{{ $vehicle->license_plate }}">

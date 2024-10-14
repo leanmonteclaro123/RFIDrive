@@ -16,16 +16,16 @@
             </ol>
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <img src="{{ asset('images/coffee.jpg') }}" class="d-block w-100 home-img" alt="University Image 1">
+                    <img src="{{ asset('images/IMG_8186.jpg') }}" class="d-block w-100 home-img" alt="University Image 1">
                 </div>
                 <div class="carousel-item">
-                    <img src="{{ asset('images/coffee.jpg') }}" class="d-block w-100 home-img" alt="University Image 2">
+                    <img src="{{ asset('images/IMG_8181.jpg') }}" class="d-block w-100 home-img" alt="University Image 2">
                 </div>
                 <div class="carousel-item">
-                    <img src="{{ asset('images/coffee.jpg') }}" class="d-block w-100 home-img" alt="University Image 3">
+                    <img src="{{ asset('images/IMG_8189.jpg') }}" class="d-block w-100 home-img" alt="University Image 3">
                 </div>
                 <div class="carousel-item">
-                    <img src="{{ asset('images/coffee.jpg') }}" class="d-block w-100 home-img" alt="University Image 4">
+                    <img src="{{ asset('images/IMG_8187.jpg') }}" class="d-block w-100 home-img" alt="University Image 4">
                 </div>
             </div>
             <a class="carousel-control-prev" href="#aboutUsCarousel" role="button" data-slide="prev">

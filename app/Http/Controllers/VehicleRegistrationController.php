@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Vehicle;
 use App\Models\Document;
 use App\Models\RegistrationRequest;
-use App\Models\LoginModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,30 +13,19 @@ class VehicleRegistrationController extends Controller
     public function create()
     {
         $user = Auth::user();
-
-        // Check if driver's license data is missing
         if (!$user->driver_license_front || !$user->driver_license_back || !$user->driver_license_expiry_date) {
-        return view('vehicleRegistration', compact('user'))->with('incomplete_profile', true);
+            return view('vehicleRegistration', compact('user'))->with('incomplete_profile', true);
         }
 
-        if ($user) {
-            return view('vehicleRegistration', compact('user'));
-        }
-
-        return redirect()->route('login')->with('error', 'You need to be logged in to register a vehicle.');
+        return view('vehicleRegistration', compact('user'));
     }
 
     public function store(Request $request)
     {
         $user = Auth::user();
-
-        if ($user->vehicles()->count() >= 2) {
-            return redirect()->back()->withErrors(['limit' => 'You can only register up to two vehicles.']);
-        }
-
-        // Validate the request
         $validated = $request->validate([
-            'vehicles.*.license_plate' => 'required|string|max:255',
+            'vehicles.*.vehicle_type' => 'required|string|in:fueled_vehicle,electronic_vehicle',
+            'vehicles.*.license_plate' => 'nullable|string|max:255',
             'vehicles.*.province' => 'required|string|max:255',
             'vehicles.*.make' => 'required|string|max:255',
             'vehicles.*.model' => 'required|string|max:255',
@@ -48,11 +36,10 @@ class VehicleRegistrationController extends Controller
             'vehicles.*.registered_owner_municipality' => 'required|string|max:255',
             'vehicles.*.registered_owner_barangay' => 'required|string|max:255',
             'vehicles.*.registered_owner_zipcode' => 'required|string|max:10',
-            'documents.*.file' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+            'documents.*.file' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'documents.*.expiry_date' => 'nullable|date',
         ]);
 
-        // Create the registration request
         $registrationRequest = RegistrationRequest::create([
             'user_id' => $user->id,
             'type' => 'vehicle_registration',
@@ -65,7 +52,8 @@ class VehicleRegistrationController extends Controller
         foreach ($validated['vehicles'] as $index => $vehicleData) {
             $vehicle = Vehicle::create([
                 'user_id' => $user->id,
-                'license_plate' => $vehicleData['license_plate'],
+                'vehicle_type' => $vehicleData['vehicle_type'],
+                'license_plate' => $vehicleData['vehicle_type'] === 'fueled_vehicle' ? $vehicleData['license_plate'] : null,
                 'province' => $vehicleData['province'],
                 'make' => $vehicleData['make'],
                 'model' => $vehicleData['model'],
@@ -80,44 +68,51 @@ class VehicleRegistrationController extends Controller
 
             $vehicleIds[] = $vehicle->id;
 
-            // Handle OR and CR documents
-            $orIndex = $index * 2; // OR is the first document for this vehicle
-            $crIndex = $orIndex + 1; // CR is the second document for this vehicle
+            $orIndex = $index * 3;
+            $crIndex = $orIndex + 1;
+            $supportDocIndex = $index === 0 ? 2 : 5;
+            $certificateIndex = $index === 0 ? 6 : 7; // Index for certificate of ownership based on Blade template
 
-            $orExpiryDate = null;
+            if ($vehicleData['vehicle_type'] === 'fueled_vehicle') {
+                if ($request->hasFile("documents.$orIndex.file")) {
+                    $document = Document::create([
+                        'vehicle_id' => $vehicle->id,
+                        'type' => 'Official Receipt',
+                        'file_path' => $request->file("documents.$orIndex.file")->store('documents', 'public'),
+                        'expiry_date' => $request->input("documents.$orIndex.expiry_date"),
+                    ]);
+                    $documentIds[] = $document->id;
+                }
 
-            if (isset($validated['documents'][$orIndex]['file'])) {
-                $file = $validated['documents'][$orIndex]['file'];
-                $filePath = $file->store('documents', 'public');
-
-                $orExpiryDate = $validated['documents'][$orIndex]['expiry_date'] ?? null;
-
-                $document = Document::create([
-                    'vehicle_id' => $vehicle->id,
-                    'type' => 'OR',
-                    'file_path' => $filePath, // Prefix with 'storage/' to access it via a public URL
-                    'expiry_date' => $orExpiryDate,
-                ]);
-
-                $documentIds[] = $document->id;
+                if ($request->hasFile("documents.$crIndex.file")) {
+                    $document = Document::create([
+                        'vehicle_id' => $vehicle->id,
+                        'type' => 'Certificate of Registration',
+                        'file_path' => $request->file("documents.$crIndex.file")->store('documents', 'public'),
+                    ]);
+                    $documentIds[] = $document->id;
+                }
+            } elseif ($vehicleData['vehicle_type'] === 'electronic_vehicle') {
+                if ($request->hasFile("documents.$certificateIndex.file")) {
+                    $document = Document::create([
+                        'vehicle_id' => $vehicle->id,
+                        'type' => 'Certificate of Ownership',
+                        'file_path' => $request->file("documents.$certificateIndex.file")->store('documents', 'public'),
+                    ]);
+                    $documentIds[] = $document->id;
+                }
             }
-
-            if (isset($validated['documents'][$crIndex]['file'])) {
-                $file = $validated['documents'][$crIndex]['file'];
-                $filePath = $file->store('documents','public');
-
+            // Handle Support Document if exists
+            if ($request->hasFile("documents.$supportDocIndex.file")) {
                 $document = Document::create([
                     'vehicle_id' => $vehicle->id,
-                    'type' => 'CR',
-                    'file_path' => $filePath, // Prefix with 'storage/' to access it via a public URL
-                    'expiry_date' => $orExpiryDate, // Set CR expiry date the same as OR
+                    'type' => 'Support Document',
+                    'file_path' => $request->file("documents.$supportDocIndex.file")->store('documents', 'public'),
                 ]);
-
                 $documentIds[] = $document->id;
             }
         }
 
-        // Save the vehicle and document IDs to the registration request
         $registrationRequest->update([
             'vehicle_ids' => json_encode($vehicleIds),
             'document_ids' => json_encode($documentIds),

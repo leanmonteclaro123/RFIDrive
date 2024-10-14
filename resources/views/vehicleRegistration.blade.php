@@ -99,9 +99,9 @@
                             <div class="form-group">
                                 <fieldset data-role="controlgroup" data-type="horizontal">
                                     <h5>Vehicle Type</h5>
-                                    <input type="radio" name="radio-choice-h-2-vehicle1" id="radio-choice-h-2a-vehicle1" value="motorcycle">
+                                    <input type="radio" name="vehicles[0][vehicle_type]" id="radio-choice-h-2a-vehicle1" value="fueled_vehicle" checked>
                                     <label for="radio-choice-h-2a-vehicle1">FEULED VEHICLE</label>
-                                    <input type="radio" name="radio-choice-h-2-vehicle1" id="radio-choice-h-2b-vehicle1" value="ebike">
+                                    <input type="radio" name="vehicles[0][vehicle_type]" id="radio-choice-h-2b-vehicle1" value="electronic_vehicle">
                                     <label for="radio-choice-h-2b-vehicle1">ELECTRIC VEHICLE</label>
                                 </fieldset>
                             </div>
@@ -112,7 +112,10 @@
                         </div>
                         <div class="form-group">
                             <label for="province-1">Province/State <span class="text-danger">*</span>:</label>
-                            <input name="vehicles[0][province]" type="text" id="province-1" class="form-control" required placeholder="Enter Province or State">
+                            <select name="vehicles[0][province]" type="text" id="province-1" class="form-control" required placeholder="Enter Province or State">
+                                <option value="">Select Province</option>
+                                <!-- Add options dynamically -->
+                            </select>
                         </div>
                         <div class="two-box form-row">
                             <div class="col-md-6 mb-3">
@@ -173,6 +176,7 @@
                             <div class="upload-group" data-label="OR-reg">
                                 <input name="documents[0][file]" type="file" id="or-reg-1" class="form-control-file" accept=".jpg, .jpeg, .png" required>
                                 <img id="or-reg-preview-1" class="img-preview or-preview" style="display:none;" alt="OR Preview">
+                                <div class="file-info"></div>
                                 <label for="or-reg-1">
                                     <i class="fas fa-upload"></i>
                                     <span>Upload OR</span>
@@ -183,6 +187,7 @@
                             <div class="upload-group" data-label="CR-reg">
                                 <input name="documents[1][file]" type="file" id="cr-reg-1" class="form-control-file" accept=".jpg, .jpeg, .png" required>
                                 <img id="cr-reg-preview-1" class="img-preview cr-preview" style="display:none;" alt="CR Preview">
+                                <div class="file-info"></div>
                                 <label for="cr-reg-1">
                                     <i class="fas fa-upload"></i>
                                     <span>Upload CR</span>
@@ -190,9 +195,11 @@
                             </div>
 
                             <!-- Certificate of Ownership field for the Electronic vehicle -->
-                            <div class="upload-group" id="certificate-ownership-group" style="display: none;">
-                                <input name="documents[2][file]" type="file" id="certificate-ownership" class="form-control-file" accept=".jpg, .jpeg, .png">
-                                <label for="certificate-ownership">
+                            <div class="upload-group full-width" data-label="certificate-ownership-reg" id="CO-1" style="display: none;">
+                                <input name="documents[6][file]" type="file" id="certificate-ownership-reg-1" class="form-control-file" accept=".jpg, .jpeg, .png">
+                                <img id="certificate-ownership-preview-1" class="img-preview co-preview" style="display:none;" alt="Certificate of Ownership Preview">
+                                <div class="file-info"></div>
+                                <label for="certificate-ownership-reg-1">
                                     <i class="fas fa-upload"></i>
                                     <span>Upload Certificate of Ownership</span>
                                 </label>
@@ -202,7 +209,7 @@
 
                         <div class="form-group">
                             <label for="documents[0][expiry_date]" class="form-label">OR/CR Expiry Date <span class="text-danger">*</span>:</label>
-                            <input type="date" name="documents[0][expiry_date]" class="form-control" required>
+                            <input type="date" name="documents[0][expiry_date]" class="form-control" >
                         </div>
 
                         <!-- Vehicle 1 Support Document Section -->
@@ -231,9 +238,9 @@
                             <div class="form-group">
                                 <fieldset data-role="controlgroup" data-type="horizontal">
                                     <legend>Vehicle Type</legend>
-                                    <input type="radio" name="radio-choice-h-2-vehicle2" id="radio-choice-h-2a-vehicle2" value="motorcycle">
+                                    <input type="radio" name="vehicles[1][vehicle_type]" id="radio-choice-h-2a-vehicle2" value="fueled_vehicle" checked>
                                     <label for="radio-choice-h-2a-vehicle2">FUELD VEHICLE</label>
-                                    <input type="radio" name="radio-choice-h-2-vehicle2" id="radio-choice-h-2b-vehicle2" value="ebike">
+                                    <input type="radio" name="vehicles[1][vehicle_type]" id="radio-choice-h-2b-vehicle2" value="electronic_vehicle">
                                     <label for="radio-choice-h-2b-vehicle2">ELECTRONIC VEHICLE</label>
                                 </fieldset>
                             </div>
@@ -245,7 +252,10 @@
                         </div>
                         <div class="form-group">
                             <label for="province-2">Province/State <span class="text-danger">*</span>:</label>
-                            <input name="vehicles[1][province]" type="text" id="province-2" class="form-control" placeholder="Enter Province or State">
+                            <select name="vehicles[1][province]" type="text" id="province-2" class="form-control" placeholder="Enter Province or State">
+                                <option value="">Select Province</option>
+                                <!-- Add options dynamically -->
+                            </select>
                         </div>
                         <div class="two-box form-row">
                             <div class="col-md-6 mb-3">
@@ -304,6 +314,7 @@
                             <div class="upload-group" data-label="OR-reg">
                                 <input name="documents[3][file]" type="file" id="or-reg-2" accept=".jpg, .jpeg, .png" class="form-control-file">
                                 <img id="or-reg-preview-2" class="img-preview or-preview" style="display:none;" alt="OR Preview">
+                                <div class="file-info"></div>
                                 <label for="or-reg-2">
                                     <i class="fas fa-upload"></i>
                                     <span>Upload OR</span>
@@ -313,16 +324,29 @@
                             <div class="upload-group" data-label="CR-reg">
                                 <input name="documents[4][file]" type="file" id="cr-reg-2" accept=".jpg, .jpeg, .png" class="form-control-file">
                                 <img id="cr-reg-preview-2" class="img-preview cr-preview" style="display:none;" alt="CR Preview">
+                                <div class="file-info"></div>
                                 <label for="cr-reg-2">
                                     <i class="fas fa-upload"></i>
                                     <span>Upload CR</span>
                                 </label>
                             </div>
+                            
+                            <!-- Certificate of Ownership field for the Electronic vehicle -->
+                            <div class="upload-group full-width" data-label="certificate-ownership-reg" id="CO-2" style="display:none">
+                                <input name="documents[7][file]" type="file" id="certificate-ownership-reg-2" class="form-control-file" accept=".jpg, .jpeg, .png">
+                                <img id="certificate-ownership-preview-2" class="img-preview co-preview" style="display:none;" alt="Certificate of Ownership Preview">
+                                <div class="file-info"></div>
+                                <label for="certificate-ownership-reg-2">
+                                    <i class="fas fa-upload"></i>
+                                    <span>Upload Certificate of Ownership</span>
+                                </label>
+                            </div>
+
                         </div>
 
                         <div class="class form-group">
                             <label for="documents[3][expiry_date]" class="form-label">Expiry Date <span class="text-danger">*</span>:</label>
-                            <input type="date" name="documents[3][expiry_date]" class="form-control" required>
+                            <input type="date" name="documents[3][expiry_date]" class="form-control" >
                         </div>
 
                         <!-- Vehicle 2 Support Document Section -->
