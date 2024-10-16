@@ -83,6 +83,7 @@
                                 <div class="card-body">
                                     <div class="card-title"><i class="fas fa-users"></i>Registered</div>
                                     <div class="stat-number"></div>
+                                    
                                 </div>
                             </div>
                         </div>

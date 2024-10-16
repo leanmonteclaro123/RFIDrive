@@ -470,18 +470,33 @@
     </div>
 @endif
 
-<!-- Confirmation Modal -->
+{{-- <!-- Confirmation Modal -->
 <div id="confirmationModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
         <h4>Confirm Submission</h4>
+        <h6>Your vehicle registration request has been sent</h6>
+        <h5>Thankyou</h5>
         <!-- Scrollable content container -->
         <div id="confirmation-modal-content" class="modal-scroll-content">
             <!-- The uploaded images and details will be inserted here by JavaScript -->
         </div>
         <button id="confirmSubmit" class="btn btn-success">Confirm</button>
     </div>
+</div> --}}
+
+<!-- Confirmation Modal -->
+<div id="confirmationModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h4>Confirm Submission</h4>
+        <div id="confirmation-modal-content" class="modal-scroll-content">
+            <!-- The uploaded images and details will be inserted here by JavaScript -->
+        </div>
+        <button id="confirmSubmit" class="btn btn-success" onclick="submitForm()">Confirm</button>
+    </div>
 </div>
+
 
 <!-- Warning Modal -->
 <div id="warningModal" class="modal">
@@ -513,6 +528,17 @@
         </div>
     </div>
 </div>
+
+<!-- Submission Success Modal -->
+<div id="submissionSuccessModal" class="modal">
+    <div class="modal-content" style="border-left: 5px solid green;">
+        <span class="close">&times;</span>
+        <h4>Vehicle Registration Request Sent</h4>
+        <p>Thank you! Your request has been successfully submitted.</p>
+        <button id="redirectBtn" class="btn btn-primary">OK</button>
+    </div>
+</div>
+
 
 <link rel="stylesheet" href="{{ asset('css/vehicleRegistration.css') }}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />

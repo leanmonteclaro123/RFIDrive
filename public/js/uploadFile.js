@@ -97,8 +97,6 @@ document.addEventListener('DOMContentLoaded', function () {
     handleSupportDocumentRequirement(1);
     handleSupportDocumentRequirement(2);
 
-    
-
     function handleVehicleTypeChange(vehicleNumber) {
         const vehicleTypeInputs = document.querySelectorAll(`input[name="vehicles[${vehicleNumber - 1}][vehicle_type]"]`);
         const orInput = document.getElementById(`or-reg-${vehicleNumber}`);
@@ -420,35 +418,75 @@ document.addEventListener('DOMContentLoaded', function () {
     window.showConfirmationModal = function () {
         const missingFiles = [];
         let modalContent = '';
-    
+        
         const userRole = document.getElementById('role').value;
         const vehicle1Type = document.querySelector('input[name="vehicles[0][vehicle_type]"]:checked')?.value;
-    
-        if (vehicle1Type === 'fueled_vehicle') {
-            if (!document.getElementById('or-reg-1').files.length) missingFiles.push("OR for Vehicle 1");
-            if (!document.getElementById('cr-reg-1').files.length) missingFiles.push("CR for Vehicle 1");
-            if (!document.querySelector('input[name="documents[0][expiry_date]"]').value) missingFiles.push("Expiry Date for OR/CR of Vehicle 1");
-            if ((userRole === 'Student' || userRole === 'Parent') && !document.getElementById('support-doc-1').files.length) missingFiles.push("Support Document for Vehicle 1");
-        } else if (vehicle1Type === 'electronic_vehicle') {
-            if (!document.getElementById('certificate-ownership-reg-1').files.length) missingFiles.push("Certificate of Ownership for Vehicle 1");
-            if ((userRole === 'Student' || userRole === 'Parent') && !document.getElementById('support-doc-1').files.length) missingFiles.push("Support Document for Vehicle 1");
+        
+        // Function to add document to modalContent if it exists
+        function addDocumentToModal(id, label, previewId) {
+            const fileInput = document.getElementById(id);
+            if (!fileInput.files.length) {
+                missingFiles.push(label);
+            } else {
+                const file = fileInput.files[0];
+                const fileType = file.type;
+                const displayContent = fileType === 'application/pdf'
+                    ? `<div class="file-info"><img src="${pdfIconUrl}" alt="${label} PDF Icon" class="confirmation-img"><br> ${file.name}</div>`
+                    : `<img src="${document.getElementById(previewId).src}" alt="${label}" class="confirmation-img">`;
+                
+                modalContent += `<div><strong>${label}:</strong><br>
+                    ${displayContent}<br>
+                    File Name: ${file.name}
+                </div><br>`;
+            }
         }
         
+        // Check for Vehicle 1 Documents
+        if (vehicle1Type === 'fueled_vehicle') {
+            addDocumentToModal('or-reg-1', 'OR for Vehicle 1', 'or-reg-preview-1');
+            addDocumentToModal('cr-reg-1', 'CR for Vehicle 1', 'cr-reg-preview-1');
+            
+            if (!document.querySelector('input[name="documents[0][expiry_date]"]').value) {
+                missingFiles.push("Expiry Date for OR/CR of Vehicle 1");
+            }
+            
+            if ((userRole === 'Student' || userRole === 'Parent')) {
+                addDocumentToModal('support-doc-1', 'Support Document for Vehicle 1', 'support-doc-preview-1');
+            }
+        } else if (vehicle1Type === 'electronic_vehicle') {
+            addDocumentToModal('certificate-ownership-reg-1', 'Certificate of Ownership for Vehicle 1', 'certificate-ownership-preview-1');
+            
+            if ((userRole === 'Student' || userRole === 'Parent')) {
+                addDocumentToModal('support-doc-1', 'Support Document for Vehicle 1', 'support-doc-preview-1');
+            }
+        }
+        
+        // Check for Vehicle 2 (if visible)
         const vehicle2Section = document.getElementById('vehicle-section-2');
         if (vehicle2Section && vehicle2Section.style.display !== 'none') {
             const vehicle2Type = document.querySelector('input[name="vehicles[1][vehicle_type]"]:checked')?.value;
     
             if (vehicle2Type === 'fueled_vehicle') {
-                if (!document.getElementById('or-reg-2').files.length) missingFiles.push("OR for Vehicle 2");
-                if (!document.getElementById('cr-reg-2').files.length) missingFiles.push("CR for Vehicle 2");
-                if (!document.querySelector('input[name="documents[3][expiry_date]"]').value) missingFiles.push("Expiry Date for OR/CR of Vehicle 2");
-                if ((userRole === 'Student' || userRole === 'Parent') && !document.getElementById('support-doc-2').files.length) missingFiles.push("Support Document for Vehicle 2");
+                addDocumentToModal('or-reg-2', 'OR for Vehicle 2', 'or-reg-preview-2');
+                addDocumentToModal('cr-reg-2', 'CR for Vehicle 2', 'cr-reg-preview-2');
+    
+                if (!document.querySelector('input[name="documents[3][expiry_date]"]').value) {
+                    missingFiles.push("Expiry Date for OR/CR of Vehicle 2");
+                }
+    
+                if ((userRole === 'Student' || userRole === 'Parent')) {
+                    addDocumentToModal('support-doc-2', 'Support Document for Vehicle 2', 'support-doc-preview-2');
+                }
             } else if (vehicle2Type === 'electronic_vehicle') {
-                if (!document.getElementById('certificate-ownership-reg-2').files.length) missingFiles.push("Certificate of Ownership for Vehicle 2");
-                if ((userRole === 'Student' || userRole === 'Parent') && !document.getElementById('support-doc-2').files.length) missingFiles.push("Support Document for Vehicle 2");
+                addDocumentToModal('certificate-ownership-reg-2', 'Certificate of Ownership for Vehicle 2', 'certificate-ownership-preview-2');
+                
+                if ((userRole === 'Student' || userRole === 'Parent')) {
+                    addDocumentToModal('support-doc-2', 'Support Document for Vehicle 2', 'support-doc-preview-2');
+                }
             }
         }
     
+        // Display Warning or Confirmation Modal
         if (missingFiles.length > 0) {
             showWarningModal(missingFiles);
         } else {
@@ -458,7 +496,79 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             document.getElementById('confirmationModal').style.display = 'block';
         }
-    };         
+    };
+    
+    
+    function showWarningModal(missingFiles) {
+        const warningList = document.getElementById('warning-list');
+        warningList.innerHTML = ''; // Clear previous warnings
+    
+        missingFiles.forEach(file => {
+            const listItem = document.createElement('p');
+            listItem.innerHTML = `<i class="fas fa-exclamation-circle" style="color: orange;"></i> ${file}`;
+            warningList.appendChild(listItem);
+        });
+    
+        document.getElementById('warningModal').style.display = 'block';
+    }
+    
+    function submitForm() {
+        const form = document.getElementById('vehicle-registration-form');
+        const formData = new FormData(form);
+    
+        fetch(form.action, {
+            method: form.method,
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                showSubmissionSuccessModal();
+            } else {
+                console.error('Form submission failed:', response.statusText);
+            }
+        })
+        .catch(error => console.error('Error during form submission:', error));
+    }
+
+    function showSubmissionSuccessModal() {
+        const confirmationModalContent = document.getElementById('confirmation-modal-content');
+        if (confirmationModalContent) {
+            confirmationModalContent.innerHTML = `
+                <div class="success-message">
+                    <h4>Vehicle Registration Request Sent</h4>
+                    <p>Thank you! Your request has been successfully submitted.</p>
+                </div>
+            `;
+        }
+        document.getElementById('confirmationModal').style.display = 'block';
+        setTimeout(() => {
+            window.location.href = "/landinghome"; 
+        }, 3000); 
+    }
+
+    document.getElementById('confirmSubmit').addEventListener('click', function (event) {
+        event.preventDefault(); 
+        if (validateFileTypes()) {
+            removeUnusedFields();
+            submitForm(); 
+        }
+    });
+    
+    document.querySelectorAll('.close').forEach(closeBtn => {
+        closeBtn.onclick = function () {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => modal.style.display = 'none');
+        };
+    });
+    
+    window.onclick = function (event) {
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(modal => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    };
 
     function validateFileTypes() {
         let valid = true;
@@ -499,47 +609,4 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
-
-    document.getElementById('confirmSubmit').addEventListener('click', function (event) {
-        if (validateFileTypes()) {
-            const vehicle1Type = document.querySelector('input[name="vehicles[0][vehicle_type]"]:checked')?.value;
-            if (vehicle1Type === 'electronic_vehicle' && !document.getElementById('certificate-ownership-reg-1').files.length) {
-                alert("Please upload a Certificate of Ownership for the electronic vehicle.");
-                event.preventDefault();
-                return;
-            }
-
-            const vehicle2Type = document.querySelector('input[name="vehicles[1][vehicle_type]"]:checked')?.value;
-            if (vehicle2Type === 'electronic_vehicle' && !document.getElementById('certificate-ownership-reg-2').files.length) {
-                alert("Please upload a Certificate of Ownership for the second electronic vehicle.");
-                event.preventDefault();
-                return;
-            }
-
-            document.getElementById('vehicle-registration-form').submit();
-        } else {
-            event.preventDefault();
-        }
-    });
-
-    document.querySelectorAll('input[type="file"]').forEach(input => {
-        console.log(`${input.id} disabled: ${input.disabled} has file: ${input.files.length > 0}`);
-    });
-
-    document.getElementById('confirmSubmit').addEventListener('click', function (event) {
-        document.querySelectorAll('input, select').forEach(input => {
-            if (!input.disabled) {
-                console.log(`${input.name}: ${input.value}`);
-            }
-        });
-    
-        if (validateFileTypes()) {
-            removeUnusedFields();
-            document.getElementById('vehicle-registration-form').submit();
-        } else {
-            event.preventDefault();
-        }
-    });
-
-    
 });
