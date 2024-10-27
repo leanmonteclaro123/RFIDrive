@@ -1,0 +1,177 @@
+/*=============== GOOGLE FONTS ===============*/
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap");
+
+/*=============== VARIABLES CSS ===============*/
+:root {
+  --header-height: 3.5rem;
+
+  /*========== Colors ==========*/
+  /*Color mode HSL(hue, saturation, lightness)*/
+  --black-color-red: hsl(0, 55%, 50%);
+  --black-color-light: hsl(220, 24%, 15%);
+  --black-color-lighten: hsl(220, 20%, 18%);
+  --white-color: #fff;
+  --body-color: hsl(220, 100%, 97%);
+
+  /*========== Font and typography ==========*/
+  /*.5rem = 8px | 1rem = 16px ...*/
+  --body-font: "Montserrat", sans-serif;
+  --normal-font-size: .938rem;
+
+  /*========== Font weigth ==========*/
+  --font-regular: 400;
+  --font-semi-bold: 600;
+
+  /*========== z index ==========*/
+  --z-tooltip: 10;
+  --z-fixed: 100;
+}
+
+/*========== Responsive typography ==========*/
+@media screen and (min-width: 1024px) {
+  :root {
+    --normal-font-size: 1rem;
+  }
+}
+
+/*=============== BASE ===============*/
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-dialog {
+    max-width: 900px;
+}
+
+.modal-content {
+    max-height: 100vh;
+    overflow-y: auto;
+   
+    border-radius: 10px;
+    background-color: white;
+}
+
+.modal-header,
+.modal-footer {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: white;
+    padding: 10px 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.modal-body {
+    padding: 20px;
+    max-height: calc(90vh - 120px);
+    overflow-y: auto;
+}
+
+.modal-footer {
+    position: sticky;
+    bottom: 0;
+    border-top: 1px solid #ddd;
+    background-color: white;
+}
+
+.modal-footer .btn {
+    min-width: 100px;
+}
+
+/* Personal Information Section
+.personal-info {
+    margin-bottom: 20px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.personal-info h4 {
+    margin-bottom: 15px;
+    color: #c0392b;
+    font-weight: bold;
+}
+
+.personal-info .form-control {
+    margin-bottom: 15px;
+    border-radius: 5px;
+} */
+
+/* Grid Layout for Forms */
+.two-box {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.two-box .form-group {
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .two-box {
+        flex-direction: column;
+    }
+}
+
+/* Upload grid for document previews */
+.upload-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.upload-group {
+    position: relative;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    min-height: 300px;
+    width: 100%;
+}
+
+.upload-group img {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.upload-group label {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #666;
+}
+
+.modal .form-group input{
+    background-color: white;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+}
+
+.modal .form-group input{
+    pointer-events: none;
+}

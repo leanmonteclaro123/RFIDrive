@@ -6,11 +6,13 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\VehicleRegistrationController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SecurityController;
+use App\Http\Controllers\Api\RFIDController;
 
 // Landing page accessible by everyone
 Route::get('/', [LoginController::class, 'landing'])->name('landing');
 
-// Guest routes for login and registration
+// Guest routes for user login and registration
 Route::middleware('guest')->group(function () {
     Route::get('/login', function () {
         return view('login');
@@ -18,7 +20,7 @@ Route::middleware('guest')->group(function () {
     
     Route::get('/register', [LoginController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [LoginController::class, 'register'])->name('register');
-    Route::post('/login', [LoginController::class, 'login'])->name('login.post');
+    Route::post('/login', [LoginController::class, 'login'])->name('login.post'); // For regular user login
 });
 
 // Logout route (user authentication)
@@ -45,32 +47,43 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
 
-// Admin routes with prefix
-Route::prefix('admin')->group(function () {
-    // Guest routes for admin login
+
+// Admin login routes
+Route::prefix('admin')->middleware('guest:admin')->group(function () {
     Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
     Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login.post');
-    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout'); 
-    
-    // Routes requiring admin authentication
-    Route::middleware('auth:admin')->group(function () {
-        // Admin dashboard
-        Route::get('/dashboard', [AdminAuthController::class, 'showDashboard'])->name('admin.dashboard');
-
-        // Requests table (registration requests)
-        Route::get('/requests', [AdminAuthController::class, 'showRequests'])->name('admin.requests');
-        Route::get('/admin/requests', [AdminAuthController::class, 'showRequests'])->name('admin.requests.index');
-
-        Route::patch('/requests/{id}', [AdminAuthController::class, 'updateRequestStatus'])->name('admin.requests.update');
-
-        // Registries table (show all users with registration requests)
-        Route::get('/registries', [AdminAuthController::class, 'showAllUsersWithRequests'])->name('admin.registries');
-
-        // Admin profile route
-        Route::get('/profile', [AdminAuthController::class, 'showProfile'])->name('admin.profile'); // Define the admin profile route here
-    });
 });
 
-Route::get('/security', function () {
-    return view('PersonnelLayout');
-})->name('PersonnelLayout');
+// Admin-specific routes with prefix
+Route::prefix('admin')->middleware('auth:admin')->group(function () {
+    Route::get('/dashboard', [AdminAuthController::class, 'showDashboard'])->name('admin.dashboard');
+    Route::get('/requests', [AdminAuthController::class, 'showRequests'])->name('admin.requests');
+    Route::patch('/requests/{id}', [AdminAuthController::class, 'updateRequestStatus'])->name('admin.requests.update');
+    Route::get('/registries', [AdminAuthController::class, 'showAllUsersWithRequests'])->name('admin.registries');
+    Route::get('/profile', [AdminAuthController::class, 'showProfile'])->name('admin.profile');
+    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+});
+
+// Security login routes
+Route::prefix('security')->middleware('guest:security')->group(function () {
+    Route::get('/login', [SecurityController::class, 'showLoginForm'])->name('security.login');
+    Route::post('/login', [SecurityController::class, 'login'])->name('security.login.post');
+});
+
+// Security-specific routes
+Route::prefix('security')->middleware('auth:security')->group(function () {
+    Route::get('/dashboard', [SecurityController::class, 'showDashboard'])->name('security.dashboard');
+    Route::get('/registries', [SecurityController::class, 'showAllApproveUsers'])->name('security.registries');
+    Route::post('/logout', [SecurityController::class, 'logout'])->name('security.logout');
+
+    // New route for searching stakeholders
+    Route::get('/search-stakeholders', [SecurityController::class, 'searchStakeholders'])->name('security.search.stakeholders');
+    Route::get('/rfid-activate', [SecurityController::class, 'showallUserApproved'])->name('security.rfid.form');
+
+
+});
+
+
+
+
+

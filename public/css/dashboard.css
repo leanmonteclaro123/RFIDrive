@@ -1,0 +1,91 @@
+/* Header Styles */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+  }
+  
+  /* Search Bar Styles */
+  .search-bar {
+    display: flex;
+    align-items: center;
+  }
+  
+  .search-bar input[type="text"] {
+    width: 250px;
+    padding: 8px;
+    border-radius: 25px 0 0 25px;
+    border: 1px solid #ccc;
+    padding-left: 15px;
+  }
+  
+  .search-bar button {
+    padding: 8px 12px;
+    border-radius: 0 25px 25px 0;
+    border: none;
+    background-color: transparent;
+    color: #c0392b;
+    cursor: pointer;
+  }
+  
+  .search-bar input[type="date"] {
+    margin-left: 15px;
+    padding: 8px;
+    border-radius: 25px;
+    border: 1px solid #ccc;
+  }
+  
+  .search-bar button:hover {
+    color: #a93226;
+  }
+  
+  /* Card Styles */
+  .card {
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    background-color: white;
+    color: black;
+    border: 1px solid #ddd;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 20px;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .card-title {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #000000;
+    display: flex;
+    align-items: center;
+  }
+  
+  .card-title i {
+    margin-right: 10px;
+    font-size: 24px;
+    color: #c0392b;
+  }
+  
+  /* Responsive Cards */
+  @media (max-width: 768px) {
+    .card {
+      margin-bottom: 20px;
+      width: 100%;
+    }
+  
+    .search-bar input[type="text"] {
+      width: 100%;
+    }
+  }
+  

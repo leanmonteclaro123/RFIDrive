@@ -45,6 +45,11 @@ return [
             'driver' => 'session',
             'provider' => 'admins',
         ],
+
+        'security' => [
+            'driver' => 'session',
+            'provider' => 'securities',  // Guard for security personnel
+        ],
     ],
 
     /*
@@ -74,6 +79,11 @@ return [
         'admins' => [
             'driver' => 'eloquent',
             'model' => App\Models\Admin::class,
+        ],
+
+        'securities' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Security::class,  // Security model
         ],
     ],
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login</title>
+    <title>Security Login</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="icon" href="{{ asset('images/bsu_logo.png') }}">
@@ -117,13 +117,13 @@
 <div class="admin-login-container">
     <div class="admin-login-header">
         <img src="{{asset('Images/bsu_logo.png')}}" alt="BSU Logo">
-        <h1>Hello, Admin!</h1>
+        <h1>Hello, Security!</h1>
         <p>Enter your credentials to access the admin dashboard</p>
     </div>
     
     <div class="login-form">
         
-        <form action="{{ route('admin.login.post') }}" method="POST">
+        <form action="{{ route('security.login.post') }}" method="POST">
             @csrf <!-- Include CSRF token for security if you're using Laravel -->
             <div class="form-group">
                 <i class="fas fa-envelope"></i>

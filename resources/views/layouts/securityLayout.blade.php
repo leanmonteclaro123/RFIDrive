@@ -19,7 +19,7 @@
     <!-- Sidebar and Main Content Wrapper -->
     <div class="d-flex">
         <!-- Sidebar -->
-        @include('adminSideBar') 
+        @include('securitySideBar') 
         
         <!-- Main Content -->
         <div class="main-content">

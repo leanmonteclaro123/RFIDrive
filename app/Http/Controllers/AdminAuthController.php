@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
+
 class AdminAuthController extends Controller
 {
     public function showProfile()
@@ -19,8 +20,15 @@ class AdminAuthController extends Controller
 
     public function showDashboard()
     {
-        // You can pass data to the dashboard view if needed
-        return view('admin.dashboard');
+        // Retrieve the required statistics
+        $registeredCount = RegistrationRequest::where('status', 'approved')->count();
+        $pendingRequestCount = RegistrationRequest::where('status', 'pending')->count();
+
+        // Pass these statistics to the dashboard view
+        return view('admin.dashboard', [
+            'registeredCount' => $registeredCount,
+            'pendingRequestCount' => $pendingRequestCount
+        ]);
     }
 
     // Show pending registration requests
@@ -32,7 +40,6 @@ class AdminAuthController extends Controller
         
         return view('admin.requests', compact('requests'));
     }
-
 
     // Show login form
     public function showLoginForm()
@@ -62,7 +69,7 @@ class AdminAuthController extends Controller
         $registrationRequest->comments = $request->comments;
         $registrationRequest->save();
 
-        return redirect()->route('admin.requests.index')->with('success', 'Request updated successfully.');
+        return redirect()->route('admin.requests')->with('success', 'Request updated successfully.');
     }
 
     // Handle admin login

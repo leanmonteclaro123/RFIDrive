@@ -1,0 +1,153 @@
+/*=============== GOOGLE FONTS ===============*/
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap");
+
+/*=============== VARIABLES CSS ===============*/
+:root {
+  --header-height: 3.5rem;
+
+  /*========== Colors ==========*/
+  --black-color-red: hsl(0, 55%, 50%);
+  --black-color-light: hsl(220, 24%, 15%);
+  --black-color-lighten: hsl(220, 20%, 18%);
+  --white-color: #fff;
+  --body-color: hsl(220, 100%, 97%);
+
+  /*========== Font and typography ==========*/
+  --body-font: "Montserrat", sans-serif;
+  --normal-font-size: .938rem;
+
+  /*========== Font weigth ==========*/
+  --font-regular: 400;
+  --font-semi-bold: 600;
+
+  /*========== z index ==========*/
+  --z-tooltip: 10;
+  --z-fixed: 100;
+}
+
+/*=============== BASE ===============*/
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+body {
+  font-family: var(--body-font);
+  background-color: var(--white-color);
+}
+
+/* Sidebar Styles */
+.sidebar {
+  height: 100vh;
+  width: 80px;
+  background-color: #c0392b;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  transition: width 0.3s ease;
+}
+
+.sidebar:hover {
+  width: 160px;
+}
+
+.sidebar img.logo {
+  width: 70%;
+  height: auto;
+  transition: width 0.3s ease;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.sidebar a {
+  color: white;
+  text-decoration: none;
+  padding: 15px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s, padding 0.3s ease, color 0.3s ease;
+  font-size: 14px;
+  width: 100%;
+}
+
+.sidebar a span {
+  display: none;
+  margin-left: 8px;
+}
+
+.sidebar:hover a span {
+  display: inline;
+}
+
+.sidebar:hover a {
+  justify-content: flex-start;
+  padding-left: 15px;
+}
+
+.sidebar a:hover, .sidebar a.active {
+  background-color: rgba(0, 0, 0, 0.2);
+  color: #fff;
+}
+
+/* Main Content Styles */
+.main-content {
+  margin-left: 80px;
+  padding: 20px;
+  width: calc(100% - 80px);
+  transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+.sidebar:hover ~ .main-content {
+  margin-left: 160px;
+  width: calc(100% - 160px);
+}
+
+/* Panel-specific styles */
+.content-section {
+  transition: all 0.3s ease; /* Smooth transition for width changes */
+  padding: 20px;
+}
+
+#dashboard, #request, #registries, #logout {
+  background-color: #ecf0f1;
+  border-radius: 5px;
+  padding: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 60px;
+  }
+
+  .sidebar:hover {
+    width: 120px;
+  }
+
+  .main-content {
+    margin-left: 60px;
+    width: calc(100% - 60px);
+  }
+
+  .sidebar:hover ~ .main-content {
+    margin-left: 120px;
+    width: calc(100% - 120px);
+  }
+}
+
+/* Smooth transition for content-section on hover */
+.content-section {
+  margin-left: 0;
+  transition: margin-left 0.3s ease, width 0.3s ease;
+}

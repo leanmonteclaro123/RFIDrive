@@ -1,4 +1,4 @@
-@extends('layouts.adminLayout')
+@extends('layouts.securityLayout')
 
 @section('title', 'Registries')
 
@@ -12,7 +12,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Role</th>
-                        
+                        <th>Type</th>
                         <th>Vehicles</th>
                         <th>Status</th>
                     </tr>
@@ -23,7 +23,7 @@
                             <tr>
                                 <td>{{ $request->user->full_name }}</td>
                                 <td>{{ $request->user->type }}</td>
-                               
+                                <td>{{ $request->type }}</td>
                                 <td>{{ is_array(json_decode($request->vehicle_ids, true)) ? count(json_decode($request->vehicle_ids, true)) : '0' }}</td>
                                 <td>{{ ucfirst($request->status) }}</td>
                             </tr>

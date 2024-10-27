@@ -1,155 +1,47 @@
+/*=============== GOOGLE FONTS ===============*/
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap");
 
-/* Base Styles */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/*=============== VARIABLES CSS ===============*/
+:root {
+  --header-height: 3.5rem;
+
+  /*========== Colors ==========*/
+  /*Color mode HSL(hue, saturation, lightness)*/
+  --black-color-red: hsl(0, 55%, 50%);
+  --black-color-light: hsl(220, 24%, 15%);
+  --black-color-lighten: hsl(220, 20%, 18%);
+  --white-color: #fff;
+  --body-color: hsl(220, 100%, 97%);
+
+  /*========== Font and typography ==========*/
+  /*.5rem = 8px | 1rem = 16px ...*/
+  --body-font: "Montserrat", sans-serif;
+  --normal-font-size: .938rem;
+
+  /*========== Font weigth ==========*/
+  --font-regular: 400;
+  --font-semi-bold: 600;
+
+  /*========== z index ==========*/
+  --z-tooltip: 10;
+  --z-fixed: 100;
 }
 
-/* Sidebar Styles */
-.sidebar {
-    height: 100vh;
-    width: 80px;
-    background-color: #c0392b;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1000;
-    transition: width 0.3s ease;
+/*========== Responsive typography ==========*/
+@media screen and (min-width: 1024px) {
+  :root {
+    --normal-font-size: 1rem;
+  }
 }
 
-.sidebar:hover {
-    width: 160px;
+/*=============== BASE ===============*/
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
-.sidebar img.logo {
-    width: 70%;
-    height: auto;
-    transition: width 0.3s ease;
-}
 
-.logo-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px 0;
-}
-
-.nav {
-    width: 100%;
-    padding: 0;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-}
-
-.sidebar a {
-    color: white;
-    text-decoration: none;
-    padding: 15px 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s, padding 0.3s ease, color 0.3s ease;
-    font-size: 14px;
-    width: 100%;
-}
-
-.sidebar a span {
-    display: none;
-    margin-left: 8px;
-}
-
-.sidebar:hover a span {
-    display: inline;
-}
-
-.sidebar:hover a {
-    justify-content: flex-start;
-    padding-left: 15px;
-}
-
-.sidebar a:hover,
-.sidebar a.active {
-    background-color: rgba(0, 0, 0, 0.2);
-    color: #fff;
-}
-
-.sidebar a i {
-    font-size: 20px;
-}
-
-.nav-item {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Dropdown Custom Styles */
-.dropdown-menu {
-    background-color: black;
-    border: none;
-}
-
-.dropdown-menu .dropdown-item {
-    color: white;
-}
-
-.dropdown-menu .dropdown-item:hover {
-    background-color: #555;
-}
-
-/* Adjusting Dropdown Arrow Position */
-.dropdown-toggle::after {
-    display: inline-block;
-    margin-left: auto;
-    vertical-align: middle;
-    border: 0.3em solid transparent;
-    border-top-color: white;
-    content: "";
-}
-
-/* Hide dropdown caret when sidebar is minimized */
-.sidebar:hover .dropdown-toggle::after {
-    display: inline-block;
-}
-
-.sidebar:not(:hover) .dropdown-toggle::after {
-    display: none;
-}
-
-/* Main Content Styles */
-.content {
-    width: calc(100% - 80px);
-    padding: 20px;
-    background-color: #fff;
-    margin-left: 80px;
-    height: 100vh;
-    position: relative;
-    transition: margin-left 0.3s ease, width 0.3s ease;
-    overflow-y: auto;
-    border-top-left-radius: 20px;
-    /* Curved top left corner */
-    border-bottom-left-radius: 20px;
-    /* Curved bottom left corner */
-}
-
-.sidebar:hover~.content {
-    margin-left: 160px;
-    width: calc(100% - 160px);
-}
 
 /* Header Styles */
 .header {
@@ -317,7 +209,6 @@ body {
 .modal {
     display: none;
     position: fixed;
-   
     left: 0;
     top: 0;
     width: 100%;
@@ -436,4 +327,21 @@ body {
     margin-top: 10px;
     font-size: 14px;
     color: #666;
+}
+
+.nav-link.active {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.nav-link {
+    color: #333;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.nav-link i {
+    margin-right: 8px;
 }

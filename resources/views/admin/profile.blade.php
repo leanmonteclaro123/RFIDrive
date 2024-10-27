@@ -1,6 +1,10 @@
 @extends('layouts.adminLayout')
 
-@section('title', 'Dashboard')
+@section('title', 'Profile')
+
+@push('styles')
+<link rel="stylesheet" href="{{ asset('css/adminProfile.css') }}">
+@endpush
 
 @section('content')
     <!-- Profile Content -->

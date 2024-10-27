@@ -6,25 +6,36 @@
 
 <section class="guidelines-content" id="guidelines">
     <div class="guidelines-content-container">
-        <h2 class="guidelines-header">University Guidelines</h2>
+        <h2 class="guidelines-header">Vehicle Registration Guidelines</h2>
         <div class="guidelines-content">
-            <h3>Code of Conduct</h3>
-            <p>All students, faculty, and staff are expected to uphold the highest standards of behavior, in line with the University’s core values of integrity, respect, and responsibility.</p>
+            <h3>Lists of Requirements for Application of Vehicle Registration</h3>
+            <p>In preparation for its implementation, we would like to emphasize the registration of vehicles and the required documents for the issuance of stickers as stated in Section II of the rules mentioned above and regulations:</p>
+            <br>
+            <p>1. Officials, faculty and staff, students, parents, and stakeholders who frequently and usually drive/using a vehicle to campus shall register their vehicle at the General Services Office every year requires the following documents:</p>
+            <h3>Accomplished Application for Vehicle Registration Form </h3>
+            <ul>
+                <p>•	Certificate of Registration of the vehicle </p>
+                <p>•	Official Receipt of Registration  </p>
+                <p>•	Driver’s License</p>
+            </ul>
+            <p>
+                <b>Requirements for E-bikes</b>
+            </p>
+
+            <p>•	Certificate of Ownership  </p>
+            <p>•	Driver’s License    </p>
+
+            <p>An additional requirement for parents and students is a photocopy of the certificate of enrollment. </p>
+            <p>2. After filling out the registration form, wait for the approval email sent by the (GSO) General Service Office before going to the General Service Office to claim your RFID sticker and RFID card. If approved, a registration fee of P100.00 will be paid to the Cashier’s Office. </p>
+            <p>3. Vehicle stickers shall be issued upon registration and shall be valid for one year and renewable thereafter, subject to payment of the renewal fee and other regulations. The type of registration/user is distinguished by color as follows: </p>
             
-            {{-- <h3>Health and Safety Protocols</h3>
-            <p>To ensure the safety of all individuals on campus, we ask that everyone follows the prescribed health and safety guidelines, which include wearing face masks, regular hand sanitation, and maintaining appropriate social distancing in accordance with health authorities' recommendations.</p>
-
-            <h3>Campus Rules</h3>
-            <p>The use of university facilities must be scheduled in advance and approved by the appropriate department. All users must ensure that facilities are left in good condition after use. Any damages or incidents must be reported to the General Services Office immediately.</p>
-
-            <h3>Academic Integrity</h3>
-            <p>Cheating, plagiarism, and other forms of academic dishonesty are strictly prohibited. Students found violating these rules will be subject to disciplinary action, which may include suspension or expulsion.</p>
-
-            <h3>Visitor Guidelines</h3>
-            <p>Visitors to the campus must check in at the front gate security office, where they will be issued visitor passes. These passes must be worn at all times while on campus.</p> --}}
-
-            <h3>Reporting Issues</h3>
-            <p>If you witness or experience any issues or violations of university policies, please report them to the Security Office or the appropriate university authority.</p>
+                <p>University Officials (Senior and Junior) </p>
+                <p>Neon RED Faculty and Employees </p>
+                <p>Neon BLUE Students </p>
+                <p>Neon GREEN Tenants </p>
+                <p>Neon ORANGE Officials </p>
+                <p>Neon YELLOW Parents </p>
+            
         </div>
     </div>
 </section>

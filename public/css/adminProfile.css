@@ -1,0 +1,50 @@
+/* Profile Section Styles */
+.profile-settings {
+    background-color: #fff;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.profile-settings .form-control {
+    margin-bottom: 15px;
+}
+
+.profile-settings .avatar img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+.upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.upload-btn-wrapper input[type=file] {
+    font-size: 100px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+}
+
+.upload-reset-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Adjust the gap as needed */
+}
+
+.upload-reset-container .btn-secondary {
+    margin-top: 0; /* Remove the margin-top from the Reset button */
+}
