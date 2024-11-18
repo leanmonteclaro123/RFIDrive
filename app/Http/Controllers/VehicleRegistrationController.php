@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 
 class VehicleRegistrationController extends Controller
 {
+
+    //REGISTRATION FORM
     public function create()
     {
         $user = Auth::user();
@@ -18,6 +20,17 @@ class VehicleRegistrationController extends Controller
         }
 
         return view('vehicleRegistration', compact('user'));
+
+    }
+    //RENEWAL FORM
+    public function recreate()
+    {
+        $user = Auth::user();
+        if (!$user->driver_license_front || !$user->driver_license_back || !$user->driver_license_expiry_date) {
+            return view('vehicleRenew', compact('user'))->with('incomplete_profile', true);
+        }
+
+        return view('vehicleRenew', compact('user'));
     }
 
     public function store(Request $request)

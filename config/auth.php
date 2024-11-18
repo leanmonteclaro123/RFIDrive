@@ -41,7 +41,19 @@ return [
             'provider' => 'users',
         ],
 
+        // Add the shared admin guard
         'admin' => [
+            'driver' => 'session',
+            'provider' => 'admins',
+        ],
+
+
+        'super_admin' => [
+            'driver' => 'session',
+            'provider' => 'admins',
+        ],
+        
+        'sub_admin' => [
             'driver' => 'session',
             'provider' => 'admins',
         ],

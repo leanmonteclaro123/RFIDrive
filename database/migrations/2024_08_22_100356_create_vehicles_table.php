@@ -11,7 +11,7 @@ class CreateVehiclesTable extends Migration
         Schema::create('vehicles', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id'); // Foreign key to login_models table
-            $table->string('license_plate');
+            $table->string('license_plate')->nullable();
             $table->string('province');
             $table->string('make');
             $table->string('model');

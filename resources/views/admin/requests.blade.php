@@ -7,84 +7,87 @@
 @endpush
 
 @section('content')
+<div id="request" class="table-container content-section">
+    <h2>Request Table</h2>
 
+    <!-- Filter Dropdown -->
+    <div class="filter-section mb-3">
+        <label for="roleFilter">Filter by Role:</label>
+        <select id="roleFilter" class="form-control" style="width: auto; display: inline-block;">
+            <option value="all">All</option>
+            <option value="Student">Student</option>
+            <option value="Faculty">Faculty</option>
+            <option value="Parent">Parent</option>
+            <option value="Tenant">Tenant</option>
+        </select>
+    </div>
 
-    <!-- Request Content -->
-   
-    <div id="request" class="table-container  content-section">
-        <h2>Request Table</h2>
-        <!-- Filter Dropdown -->
-        <div class="filter-section mb-3">
-            <label for="roleFilter">Filter by Role:</label>
-            <select id="roleFilter" class="form-control" style="width: auto; display: inline-block;">
-                <option value="all">All</option>
-                <option value="Student">Student</option>
-                <option value="Faculty">Faculty</option>
-                <option value="Parent">Parent</option>
-                <option value="Tenant">Tenant</option>
-                <!-- Add more roles as needed -->
-            </select>
-        </div>
-
-    <!-- Request Content -->
-    <div id="request" class="table-container content-section">
-        
-        <div class="table-responsive">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>User</th>
-                        <th>Role</th>
-                        <th>Type</th>
-                        <th>Details</th>
-                        <th>Status</th>
-                        <th>Comment</th>
-                        <th>Action</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($requests as $request)
-                        <tr data-role="{{ strtolower($request->user->type) }}">
-                            <td>{{ $request->user->full_name }}</td>
-                            <td>{{ $request->user->type }}</td>
-                            <td>{{ $request->type }}</td>
-                            <td>
-                                <!-- Trigger the modal with a button -->
-                                <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#requestDetailsModal{{ $request->id }}">
-                                    <i class="fas fa-folder"></i>
-                                </button>
-                            </td>
-                            <form action="{{ route('admin.requests.update', $request->id) }}" method="POST">
+    <!-- Table -->
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Registration Date</th>
+                    <th>User</th>
+                    <th>Role</th>
+                    <th>Type</th>
+                    <th>Details</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($requests as $request)
+                    <tr data-role="{{ strtolower($request->user->type) }}">
+                        <td>{{ $request->created_at->format('m-d-Y') }}</td>
+                        <td>{{ $request->user->full_name }}</td>
+                        <td>{{ $request->user->type }}</td>
+                        <td>{{ $request->type }}</td>
+                        <td>
+                            <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#requestDetailsModal{{ $request->id }}">
+                                <i class="fas fa-folder"></i>
+                            </button>
+                        </td>
+                        <td>{{ ucfirst($request->status) }}</td>
+                        <td>
+                            <form action="{{ route('admin.requests.update', $request->id) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('PATCH')
-                                <td>  
-                                    <div class="form-group">
-                                        <select name="status" class="form-control status-dropdown" required>
-                                            <option value="{{ $request->status }}" selected>{{ ucfirst($request->status) }}</option>
-                                            <option value="approved" {{ $request->status == 'approved' ? 'selected' : '' }}>Approve</option>
-                                            <option value="rejected" {{ $request->status == 'rejected' ? 'selected' : '' }}>Reject</option>
-                                        </select>
-                                    </div>                    
-                                </td>
-                                <td>
-                                    <div class="form-group">
-                                        <input type="text" name="comments" class="form-control comment-field" placeholder="Comments (optional)" {{ $request->status == 'pending' ? 'disabled' : '' }}>
-                                    </div>
-                                </td>
-                                <td>
-                                    <button type="submit" class="btn btn-primary update-btn" {{ $request->status == 'pending' ? 'disabled' : '' }}>Update</button>
-                                </td>
+                                <button type="submit" name="status" value="validated" class="btn btn-success">Validate</button>
                             </form>
-                            
-                            <td>{{ $request->created_at->format('m-d-Y') }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal{{ $request->id }}">
+                                Reject
+                            </button>
+                        </td>
+                    </tr>
+
+                    <!-- Reject Modal -->
+                    <div class="modal fade" id="rejectModal{{ $request->id }}" tabindex="-1" aria-labelledby="rejectModalLabel{{ $request->id }}">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="rejectModalLabel{{ $request->id }}">Reject Request</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{{ route('admin.requests.update', $request->id) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <div class="form-group">
+                                            <label for="comments">Reason for Rejection:</label>
+                                            <textarea name="comments" id="comments" class="form-control" required></textarea>
+                                        </div>
+                                        <button type="submit" name="status" value="rejected" class="btn btn-danger mt-3">Submit</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </tbody>
+        </table>
     </div>
-  
+</div>
 
     <!-- Modals for Each Request -->
     @foreach($requests as $request)
@@ -246,15 +249,11 @@
         </div>
     </div>
     @endforeach
-
-   
-
-   
+    
 @endsection
 
 @push('scripts')
 <script src="{{ asset('js/request.js') }}"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
 @endpush

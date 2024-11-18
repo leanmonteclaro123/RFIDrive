@@ -37,6 +37,63 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Pie Chart Section -->
+            {{-- <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title"><i class="fas fa-chart-pie"></i> Registration Status</div>
+                        <canvas id="registrationStatusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <br> --}}
+
+            <!-- Request History Chart Section -->
+            {{-- <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title"><i class="fas fa-chart-line"></i> Request History (Last 30 Days)</div>
+                        <canvas id="requestHistoryChart"></canvas>
+                    </div>
+                </div>
+            </div> --}}
         </div>
     </div>
+
+    @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{{-- <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Pie chart for registration status
+        const ctxStatus = document.getElementById('registrationStatusChart').getContext('2d');
+        new Chart(ctxStatus, {
+            type: 'pie',
+            data: {
+                labels: ['Registered', 'Pending'],
+                datasets: [{
+                    label: 'Registration Status',
+                    data: [{{ $registeredCount }}, {{ $pendingRequestCount }}],
+                    backgroundColor: ['#4CAF50', '#FF9800'],
+                    borderColor: ['#4CAF50', '#FF9800'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                }
+            }
+        });
+
+        // Line chart for request history
+        
+    });
+</script> --}}
+@endpush
+
+
 @endsection

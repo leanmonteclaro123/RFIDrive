@@ -21,6 +21,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', [LoginController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [LoginController::class, 'register'])->name('register');
     Route::post('/login', [LoginController::class, 'login'])->name('login.post'); // For regular user login
+    
 });
 
 // Logout route (user authentication)
@@ -41,6 +42,8 @@ Route::middleware('auth')->group(function () {
     // Vehicle Registration routes
     Route::get('/vehicle-registration', [VehicleRegistrationController::class, 'create'])->name('vehicle.registration');
     Route::post('/vehicle-registration', [VehicleRegistrationController::class, 'store'])->name('vehicle.registration.store');
+
+    Route::get('/vehicle-renewal', [VehicleRegistrationController::class, 'recreate'])->name('vehicle.renew');
     
     // Profile routes
     Route::get('/profile', [LoginController::class, 'showProfile'])->name('profile');
@@ -54,15 +57,27 @@ Route::prefix('admin')->middleware('guest:admin')->group(function () {
     Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login.post');
 });
 
-// Admin-specific routes with prefix
-Route::prefix('admin')->middleware('auth:admin')->group(function () {
+Route::prefix('admin')->middleware(['auth:admin'])->group(function () {
     Route::get('/dashboard', [AdminAuthController::class, 'showDashboard'])->name('admin.dashboard');
-    Route::get('/requests', [AdminAuthController::class, 'showRequests'])->name('admin.requests');
-    Route::patch('/requests/{id}', [AdminAuthController::class, 'updateRequestStatus'])->name('admin.requests.update');
-    Route::get('/registries', [AdminAuthController::class, 'showAllUsersWithRequests'])->name('admin.registries');
+
+    // Routes for Super Admin
+    Route::middleware('admin.role:super_admin')->group(function () {
+        Route::get('/requests', [AdminAuthController::class, 'showRequests'])->name('super.admin.requests');
+        Route::patch('/requests/{id}', [AdminAuthController::class, 'updateRequestStatus'])->name('super.admin.requests.update');
+        Route::get('/registries', [AdminAuthController::class, 'showAllUsersWithRequests'])->name('super.admin.registries');
+    });
+
+    // Routes for Sub Admin
+    Route::middleware('admin.role:sub_admin')->group(function () {
+        Route::get('/requests', [AdminAuthController::class, 'showRequests'])->name('sub.admin.requests');
+        Route::patch('/requests/{id}', [AdminAuthController::class, 'updateRequestStatus'])->name('sub.admin.requests.update');
+    });
+
+    // Shared routes
     Route::get('/profile', [AdminAuthController::class, 'showProfile'])->name('admin.profile');
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 });
+
 
 // Security login routes
 Route::prefix('security')->middleware('guest:security')->group(function () {
@@ -78,7 +93,8 @@ Route::prefix('security')->middleware('auth:security')->group(function () {
 
     // New route for searching stakeholders
     Route::get('/search-stakeholders', [SecurityController::class, 'searchStakeholders'])->name('security.search.stakeholders');
-    Route::get('/rfid-activate', [SecurityController::class, 'showallUserApproved'])->name('security.rfid.form');
+    Route::get('/rfid-activation', [SecurityController::class, 'showallUserApproved'])->name('security.rfid.form');
+    Route::get('/vehicleLogs', [SecurityController::class, 'VehicleLogs'])->name('security.vehicle.form');
 
 
 });

@@ -2,8 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RFIDController;
-use App\Http\Controllers\SecurityController;
 
-// Define the API route for checking RFID
+// Define the POST route for RFID activation, handled by RFIDController
+Route::post('/rfid/activate', [RFIDController::class, 'store']);
 
-Route::middleware([])->post('/rfid', [RFIDController::class, 'storeRFID']);
+
+
+// Define the GET route for fetching the latest RFID tag
+Route::get('/rfid/latest', [RFIDController::class, 'getLatestTag']);

@@ -55,11 +55,14 @@
                                     <i class="ri-folder-user-line"></i>Registration
                                 </a>
                             </li>
+
                             <li>
-                                <a href="#" class="dropdown__link" data-target="renewal">
+                                <a href="{{ route('vehicle.renew') }}" class="dropdown__link ">
                                     <i class="ri-arrow-up-down-line"></i> Renewal
                                 </a>
                             </li>
+
+                            
 
                         </ul>
                     </li>

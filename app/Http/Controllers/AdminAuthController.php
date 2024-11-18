@@ -24,6 +24,8 @@ class AdminAuthController extends Controller
         $registeredCount = RegistrationRequest::where('status', 'approved')->count();
         $pendingRequestCount = RegistrationRequest::where('status', 'pending')->count();
 
+        
+
         // Pass these statistics to the dashboard view
         return view('admin.dashboard', [
             'registeredCount' => $registeredCount,
@@ -34,12 +36,23 @@ class AdminAuthController extends Controller
     // Show pending registration requests
     public function showRequests()
     {
-        $requests = RegistrationRequest::with('user') // Only load 'user', no 'vehicles' or 'documents'
-            ->where('status', 'pending')
-            ->get();
-        
+        $admin = Auth::guard('admin')->user();
+
+        $requests = RegistrationRequest::with('user');
+
+        // Filter requests based on role
+        if ($admin->role === 'super_admin') {
+            $requests = $requests->where('status', 'validated');
+        } elseif ($admin->role === 'sub_admin') {
+            $requests = $requests->where('status', 'pending');
+        }
+
+        $requests = $requests->get();
+
         return view('admin.requests', compact('requests'));
     }
+
+
 
     // Show login form
     public function showLoginForm()
@@ -59,23 +72,31 @@ class AdminAuthController extends Controller
     public function updateRequestStatus(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:approved,rejected',
+            'status' => 'required|in:approved,rejected,validated',
             'comments' => 'nullable|string',
         ]);
 
         $registrationRequest = RegistrationRequest::findOrFail($id);
         $registrationRequest->status = $request->status;
         $registrationRequest->admin_id = Auth::guard('admin')->id();
-        $registrationRequest->comments = $request->comments;
+         // Only update comments if the status is 'rejected'
+        if ($request->status === 'rejected') {
+            $registrationRequest->comments = $request->comments;
+        } else {
+            $registrationRequest->comments = null; // Clear previous comments if any
+        }
+
         $registrationRequest->save();
 
         return redirect()->route('admin.requests')->with('success', 'Request updated successfully.');
     }
 
+    //return redirect()->intended('/admin/dashboard');
+
     // Handle admin login
     public function login(Request $request)
     {
-        // Validate the login credentials
+        // Validate credentials
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|string',
@@ -83,21 +104,40 @@ class AdminAuthController extends Controller
 
         $credentials = $request->only('email', 'password');
 
-        // Attempt to log in the admin
-        if (Auth::guard('admin')->attempt($credentials)) {
-            return redirect()->intended('/admin/dashboard');
+        // Attempt to find the admin by email
+        $admin = Admin::where('email', $request->email)->first();
+
+        if ($admin && Hash::check($request->password, $admin->password)) {
+            // Log in with the appropriate guard
+            if ($admin->role === 'super_admin') {
+                Auth::guard('super_admin')->login($admin);
+                return redirect()->intended('/admin/dashboard');
+            } elseif ($admin->role === 'sub_admin') {
+                Auth::guard('sub_admin')->login($admin);
+                return redirect()->intended('/admin/dashboard');
+            }
         }
 
-        // If login fails, return with an error message
+        // If login fails
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ]);
     }
 
+
+
+
     // Handle admin logout
-    public function logout()
+    public function logout(Request $request)
     {
-        Auth::guard('admin')->logout();
+        if (Auth::guard('super_admin')->check()) {
+            Auth::guard('super_admin')->logout();
+        } elseif (Auth::guard('sub_admin')->check()) {
+            Auth::guard('sub_admin')->logout();
+        }
+
         return redirect()->route('admin.login');
     }
+
+
 }

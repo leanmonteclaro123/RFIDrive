@@ -34,6 +34,15 @@ class SecurityController extends Controller
         return view('security.rfidActivation', compact('approvedUsers'));
     }
 
+    public function VehicleLogs()
+    {
+        $approvedUsers = LoginModel::whereHas('registrationRequests', function ($query) {
+            $query->where('status', 'approved');
+        })->with('vehicles')->get();
+
+        return view('security.vehicleLog', compact('approvedUsers'));
+    }
+
 
     // Show dashboard
     public function showDashboard()

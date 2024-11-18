@@ -14,7 +14,14 @@ class AdminSeeder extends Seeder
             'name' => 'Admin',
             'email' => 'acantos677@gmail.com',
             'password' => 'Acantos345', 
-            'role' => 'Admin', 
+            'role' => 'sub_admin', 
+        ]);
+
+        Admin::create([
+            'name' => 'Admin',
+            'email' => 'acantos6771@gmail.com',
+            'password' => 'Acantos3451', 
+            'role' => 'super_admin', 
         ]);
     }
 }

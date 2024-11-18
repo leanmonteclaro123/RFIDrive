@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Vehicle Registration Form')
+@section('title', 'Vehicle Renewal Form')
 
 @section('content')
 <section class="home-content">
@@ -19,7 +19,7 @@
             @endif
             
                 <div class="registration-header text-center">
-                    <h2>VEHICLE REGISTRATION FORM</h2>
+                    <h2>VEHICLE RENEWAL FORM</h2>
                     <p>Please complete all required fields and use CamScanner to capture documents </p>
                 </div>
 

@@ -70,14 +70,16 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <form id="rfidForm">
+                <form id="rfidActivationForm">
+                    @csrf
                     <div class="form-group">
-                        <label for="rfidtag">RFID Tag</label>
-                        <input type="text" class="form-control" id="rfidtag" name="rfid_tag" readonly>
+                        <label for="rfidTag">RFID Tag</label>
+                        <input type="text" class="form-control" id="rfidTag" readonly>
                     </div>
-                    <button type="button" class="btn btn-primary" id="activateRfidButton">Activate</button>
+                    <input type="hidden" id="vehicleId">
+                    <button type="submit" class="btn btn-success">Activate</button>
                 </form>
-            </div>            
+            </div>
         </div>
     </div>
 </div>
@@ -116,31 +118,66 @@ document.querySelectorAll('.activate-btn').forEach(button => {
     button.addEventListener('click', function() {
         const vehicleId = this.getAttribute('data-vehicle-id');
         document.getElementById('vehicleId').value = vehicleId;
+        document.getElementById('rfidTag').value = '';  // Clear RFID tag field
         $('#rfidModal').modal('show');
     });
 });
 
-document.addEventListener("DOMContentLoaded", function() {
-    const rfidInput = document.getElementById("rfidtag");
+// Form submission for RFID activation
+document.getElementById('rfidActivationForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const rfidTag = document.getElementById('rfidTag').value;
+    const vehicleId = document.getElementById('vehicleId').value;
 
-    // Example using WebSocket (you can replace this with Fetch API if needed)
-    const socket = new WebSocket("ws://your-nodemcu-ip:your-port");
-    socket.onmessage = function(event) {
-        const rfidTag = event.data;
-        rfidInput.value = rfidTag;  // Automatically fill the RFID input field
-    };
-
-    document.getElementById("activateRfidButton").addEventListener("click", function() {
-        const rfidTag = rfidInput.value;
-        if (rfidTag) {
-            const form = document.getElementById("rfidForm");
-            form.submit();  // Submit the form to store RFID tag
-        } else {
-            alert("No RFID tag detected");
-        }
-    });
+    if (rfidTag && vehicleId) {
+        fetch('/api/rfid/scan', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                
+            },
+            body: JSON.stringify({ rfid_tag: rfidTag, vehicle_id: vehicleId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert(data.message);  // Notify success
+                $('#rfidModal').modal('hide');  // Close modal
+            } else {
+                alert('Failed to activate RFID.');  // Notify error
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    } else {
+        alert('RFID tag or vehicle ID missing.');
+    }
 });
 
+// Function to receive RFID tag data from NodeMCU
+// Here you could use WebSocket or polling to auto-populate RFID tag
+function simulateRFIDTagAutoPopulate(tag) {
+    document.getElementById('rfidTag').value = tag;
+}
+
+// Example usage: simulate receiving an RFID tag from NodeMCU
+setTimeout(() => {
+    simulateRFIDTagAutoPopulate("123456ABCDEF");
+}, 3000);  // Simulates a delay for testing purposes
+
+function fetchLatestRFIDTag() {
+    fetch('/api/rfid/activate', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        
+    },
+        body: JSON.stringify({ rfid_tag: rfidTag, vehicle_id: vehicleId })
+    })
+}
+
+
+// Poll for RFID tag data every 5 seconds
+setInterval(fetchLatestRFIDTag, 5000);
 
 </script>
 @endpush

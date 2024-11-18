@@ -25,7 +25,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="#">
+            <a href="{{ route('security.vehicle.form') }}" class="nav-link {{ Request::routeIs('security.vehicle.form') ? 'active' : '' }}">
                 <i class="fa-solid fa-clock"></i>
                 <span>Vehicle Logs</span>
             </a>

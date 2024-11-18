@@ -9,11 +9,7 @@
 @section('content')
 <div class="header">
     <h1>Dashboard</h1>
-    <div class="search-bar">
-        <input type="text" placeholder="Search...">
-        <button><i class="fas fa-search"></i></button>
-        <input type="date" id="date-picker">
-    </div>
+    
 </div>
 <div class="row">
     <div class="col-lg-6 col-md-6 col-sm-12">
