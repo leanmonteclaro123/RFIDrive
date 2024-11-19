@@ -41,19 +41,8 @@ return [
             'provider' => 'users',
         ],
 
-        // Add the shared admin guard
+        //Add the shared admin guard
         'admin' => [
-            'driver' => 'session',
-            'provider' => 'admins',
-        ],
-
-
-        'super_admin' => [
-            'driver' => 'session',
-            'provider' => 'admins',
-        ],
-        
-        'sub_admin' => [
             'driver' => 'session',
             'provider' => 'admins',
         ],
@@ -97,6 +86,8 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\Security::class,  // Security model
         ],
+
+        
     ],
 
     /*

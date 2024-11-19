@@ -18,8 +18,8 @@ Route::middleware('guest')->group(function () {
         return view('login');
     })->name('login');
     
-    Route::get('/register', [LoginController::class, 'showRegistrationForm'])->name('register');
-    Route::post('/register', [LoginController::class, 'register'])->name('register');
+    Route::get('/register', [LoginController::class, 'showRegistrationForm'])->name('user.register.form');
+    Route::post('/register', [LoginController::class, 'register'])->name('user.register.submit');
     Route::post('/login', [LoginController::class, 'login'])->name('login.post'); // For regular user login
     
 });
@@ -57,25 +57,25 @@ Route::prefix('admin')->middleware('guest:admin')->group(function () {
     Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login.post');
 });
 
-Route::prefix('admin')->middleware(['auth:admin'])->group(function () {
+// Shared admin routes
+Route::prefix('admin')->middleware('auth:admin')->group(function () {
     Route::get('/dashboard', [AdminAuthController::class, 'showDashboard'])->name('admin.dashboard');
+    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
-    // Routes for Super Admin
-    Route::middleware('admin.role:super_admin')->group(function () {
-        Route::get('/requests', [AdminAuthController::class, 'showRequests'])->name('super.admin.requests');
+    // Define the registries route for both roles
+    Route::get('/registries', [AdminAuthController::class, 'showAllUsersWithRequests'])->name('admin.registries');
+
+    // Super Admin routes
+    Route::prefix('super')->middleware('admin.role:super_admin')->group(function () {
+        Route::get('/requests', [AdminAuthController::class, 'superAdminRequests'])->name('super.admin.requests');
         Route::patch('/requests/{id}', [AdminAuthController::class, 'updateRequestStatus'])->name('super.admin.requests.update');
-        Route::get('/registries', [AdminAuthController::class, 'showAllUsersWithRequests'])->name('super.admin.registries');
     });
 
-    // Routes for Sub Admin
-    Route::middleware('admin.role:sub_admin')->group(function () {
-        Route::get('/requests', [AdminAuthController::class, 'showRequests'])->name('sub.admin.requests');
+    // Sub Admin routes
+    Route::prefix('sub')->middleware('admin.role:sub_admin')->group(function () {
+        Route::get('/requests', [AdminAuthController::class, 'subAdminRequests'])->name('sub.admin.requests');
         Route::patch('/requests/{id}', [AdminAuthController::class, 'updateRequestStatus'])->name('sub.admin.requests.update');
     });
-
-    // Shared routes
-    Route::get('/profile', [AdminAuthController::class, 'showProfile'])->name('admin.profile');
-    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 });
 
 

@@ -13,9 +13,11 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ route('admin.requests') }}" class="nav-link {{ Request::routeIs('admin.requests') ? 'active' : '' }}">
+            <a 
+                href="{{ Auth::guard('admin')->user()->role === 'super_admin' ? route('super.admin.requests') : route('sub.admin.requests') }}" 
+                class="nav-link {{ Request::routeIs('super.admin.requests', 'sub.admin.requests') ? 'active' : '' }}">
                 <i class="fas fa-comment-dots"></i>
-                <span>Request</span>  
+                <span>Request</span>
             </a>
         </li>
         <li class="nav-item">
@@ -44,6 +46,7 @@
         </li>
     </ul>
 </nav>
+
 
 
 
